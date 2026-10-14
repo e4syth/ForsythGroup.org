@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Forsyth Group LLC | Enterprise Software Architecture &amp; Technology Consulting</title>
+  <meta name="description" content="Over 35 years of engineering excellence in custom enterprise software architecture, bespoke web platforms, and tailored event management technologies for professional associations and complex organizations." />
+  <meta name="theme-color" content="#0f172a" />
+
+  <!-- Open Graph / Enterprise Metadata -->
+  <meta property="og:title" content="The Forsyth Group LLC | Custom Enterprise Software Architecture" />
+  <meta property="og:description" content="The Forsyth Group LLC delivers high-reliability software architecture, bespoke web platforms, and tailored event management technologies for professional associations and complex organizations." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://forsythgroup.org" />
+
+  <!-- Inline SVG Favicon matching corporate mark -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 170'%3E%3Crect width='120' height='170' rx='20' fill='%230f172a'/%3E%3Cg stroke='%23d97706' stroke-width='6' stroke-linecap='round'%3E%3Cline x1='50' y1='29' x2='68' y2='29'/%3E%3Cline x1='29' y1='50' x2='29' y2='64'/%3E%3Cline x1='48' y1='66' x2='70' y2='48'/%3E%3Cline x1='89' y1='50' x2='89' y2='64'/%3E%3Cline x1='50' y1='85' x2='68' y2='85'/%3E%3Cline x1='29' y1='106' x2='29' y2='120'/%3E%3Cline x1='48' y1='122' x2='73' y2='100'/%3E%3C/g%3E%3Crect x='8' y='8' width='42' height='42' fill='%23475569' stroke='%2394a3b8' stroke-width='2'/%3E%3Cpolygon points='8,50 50,8 50,50' fill='%231e293b'/%3E%3Crect x='68' y='8' width='42' height='42' fill='%23334155' stroke='%2394a3b8' stroke-width='2'/%3E%3Crect x='76' y='16' width='26' height='26' fill='%231e293b' stroke='%2364748b' stroke-width='1.5'/%3E%3Crect x='8' y='64' width='42' height='42' fill='%23475569' stroke='%2394a3b8' stroke-width='2'/%3E%3Cpolygon points='8,106 50,64 50,106' fill='%231e293b'/%3E%3Ccircle cx='89' cy='85' r='21' fill='%23d97706'/%3E%3Ccircle cx='83' cy='79' r='7' fill='%23fbbf24' opacity='0.6'/%3E%3Crect x='8' y='120' width='42' height='42' fill='%23475569' stroke='%2394a3b8' stroke-width='2'/%3E%3Cpolygon points='8,162 50,120 50,162' fill='%231e293b'/%3E%3C/svg%3E" />
+
+  <!-- Google Fonts: Plus Jakarta Sans (matches corporate wordmark geometry) & Inter + JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            slate: {
+              850: '#162033',
+              900: '#0f172a',
+              950: '#080d1a',
+            },
+            copper: {
+              300: '#fcd34d',
+              400: '#fbbf24',
+              500: '#f59e0b',
+              600: '#d97706',
+              700: '#b45309',
+              800: '#92400e',
+              900: '#78350f',
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+            display: ['Plus Jakarta Sans', 'Inter', 'system-ui', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          boxShadow: {
+            'copper-glow': '0 0 35px -5px rgba(217, 119, 6, 0.22)',
+            'card-elevated': '0 20px 50px -12px rgba(2, 6, 23, 0.7)',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Custom Enterprise Finishing & Metallic Accents */
+    body {
+      background-color: #0f172a;
+      color: #f8fafc;
+      overflow-x: hidden;
+    }
+
+    /* Subtle architectural grid background */
+    .bg-architectural-grid {
+      background-size: 48px 48px;
+      background-image: 
+        linear-gradient(to right, rgba(148, 163, 184, 0.04) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(148, 163, 184, 0.04) 1px, transparent 1px);
+    }
+
+    /* Metallic card border with subtle copper highlight on hover */
+    .enterprise-card {
+      background: linear-gradient(165deg, rgba(30, 41, 59, 0.78) 0%, rgba(15, 23, 42, 0.92) 100%);
+      border: 1px solid rgba(148, 163, 184, 0.14);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .enterprise-card:hover {
+      border-color: rgba(217, 119, 6, 0.45);
+      box-shadow: 0 20px 40px -15px rgba(2, 6, 23, 0.8), 0 0 25px -5px rgba(217, 119, 6, 0.12);
+      transform: translateY(-2px);
+    }
+
+    /* Brushed Copper Gradient Text & Borders */
+    .text-copper-gradient {
+      background: linear-gradient(135deg, #fbbf24 0%, #d97706 55%, #b45309 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .bg-copper-gradient {
+      background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+    }
+
+    .bg-copper-gradient:hover {
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    }
+
+    .copper-divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent 0%, rgba(217, 119, 6, 0.45) 50%, transparent 100%);
+    }
+  </style>
+</head>
+<body class="bg-slate-900 text-white font-sans antialiased selection:bg-copper-600 selection:text-white">
+
+  <!-- Shared SVG Gradients for the Corporate Brand Mark -->
+  <svg width="0" height="0" class="hidden" aria-hidden="true">
+    <defs>
+      <!-- Brushed Gunmetal Upper-Left Facet -->
+      <linearGradient id="tfg-steel-light" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#94a3b8" />
+        <stop offset="45%" stop-color="#475569" />
+        <stop offset="100%" stop-color="#334155" />
+      </linearGradient>
+      <!-- Brushed Gunmetal Lower-Right Facet -->
+      <linearGradient id="tfg-steel-dark" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#334155" />
+        <stop offset="60%" stop-color="#1e293b" />
+        <stop offset="100%" stop-color="#0f172a" />
+      </linearGradient>
+      <!-- Metallic Bevel Stroke -->
+      <linearGradient id="tfg-bevel" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#cbd5e1" stop-opacity="0.75" />
+        <stop offset="50%" stop-color="#64748b" stop-opacity="0.4" />
+        <stop offset="100%" stop-color="#1e293b" stop-opacity="0.9" />
+      </linearGradient>
+      <!-- Copper Connecting Strut Gradient -->
+      <linearGradient id="tfg-copper-rod" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#fde68a" />
+        <stop offset="35%" stop-color="#d97706" />
+        <stop offset="75%" stop-color="#b45309" />
+        <stop offset="100%" stop-color="#78350f" />
+      </linearGradient>
+      <!-- 3D Burnished Copper Sphere Radial Gradient -->
+      <radialGradient id="tfg-copper-sphere" cx="36%" cy="32%" r="65%" fx="32%" fy="28%">
+        <stop offset="0%" stop-color="#fef3c7" />
+        <stop offset="18%" stop-color="#fbbf24" />
+        <stop offset="48%" stop-color="#d97706" />
+        <stop offset="78%" stop-color="#92400e" />
+        <stop offset="100%" stop-color="#451a03" />
+      </radialGradient>
+    </defs>
+  </svg>
+
+  <!-- ==================== HEADER & NAVIGATION ==================== -->
+  <header class="sticky top-0 z-50 border-b border-slate-800/80 bg-slate-900/90 backdrop-blur-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-20">
+        
+        <!-- Left: Corporate Identity (Exact Vector Recreation of The Forsyth Group LLC Mark) -->
+        <a href="#" class="flex items-center gap-3.5 group focus:outline-none" aria-label="The Forsyth Group LLC Home">
+          <svg class="w-10 h-14 flex-shrink-0 transition-transform duration-300 group-hover:scale-[1.03]" viewBox="0 0 120 168" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The Forsyth Group Geometric Truss Emblem">
+            <!-- Copper Connecting Rods -->
+            <g stroke="url(#tfg-copper-rod)" stroke-width="5.5" stroke-linecap="round">
+              <!-- Top Horizontal (1,1 to 1,2) -->
+              <line x1="48" y1="27" x2="68" y2="27" />
+              <!-- Upper Vertical (1,1 to 2,1) -->
+              <line x1="27" y1="48" x2="27" y2="63" />
+              <!-- Upper Diagonal (2,1 to 1,2) -->
+              <line x1="47" y1="65" x2="69" y2="47" />
+              <!-- Right Vertical (1,2 to Sphere) -->
+              <line x1="89" y1="48" x2="89" y2="64" />
+              <!-- Middle Horizontal (2,1 to Sphere) -->
+              <line x1="48" y1="84" x2="67" y2="84" />
+              <!-- Lower Vertical (2,1 to 3,1) -->
+              <line x1="27" y1="105" x2="27" y2="120" />
+              <!-- Lower Diagonal (3,1 to Sphere) -->
+              <line x1="47" y1="122" x2="73" y2="99" />
+            </g>
+
+            <!-- Square (1,1) Top-Left -->
+            <g>
+              <rect x="5" y="5" width="44" height="44" fill="url(#tfg-steel-light)" stroke="url(#tfg-bevel)" stroke-width="2" />
+              <polygon points="5,49 49,5 49,49" fill="url(#tfg-steel-dark)" />
+              <line x1="5" y1="49" x2="49" y2="5" stroke="#94a3b8" stroke-opacity="0.35" stroke-width="1" />
+            </g>
+
+            <!-- Square (1,2) Top-Right Recessed Frame -->
+            <g>
+              <rect x="67" y="5" width="44" height="44" fill="url(#tfg-steel-light)" stroke="url(#tfg-bevel)" stroke-width="2" />
+              <polygon points="67,49 111,5 111,49" fill="url(#tfg-steel-dark)" opacity="0.7" />
+              <rect x="75" y="13" width="28" height="28" fill="#1e293b" stroke="#94a3b8" stroke-opacity="0.45" stroke-width="1.5" />
+              <polygon points="75,41 103,13 103,41" fill="#0f172a" opacity="0.65" />
+            </g>
+
+            <!-- Square (2,1) Middle-Left -->
+            <g>
+              <rect x="5" y="62" width="44" height="44" fill="url(#tfg-steel-light)" stroke="url(#tfg-bevel)" stroke-width="2" />
+              <polygon points="5,106 49,62 49,106" fill="url(#tfg-steel-dark)" />
+              <line x1="5" y1="106" x2="49" y2="62" stroke="#94a3b8" stroke-opacity="0.35" stroke-width="1" />
+            </g>
+
+            <!-- Sphere (2,2) Middle-Right Copper Node -->
+            <circle cx="89" cy="84" r="22.5" fill="url(#tfg-copper-sphere)" />
+
+            <!-- Square (3,1) Bottom-Left -->
+            <g>
+              <rect x="5" y="119" width="44" height="44" fill="url(#tfg-steel-light)" stroke="url(#tfg-bevel)" stroke-width="2" />
+              <polygon points="5,163 49,119 49,163" fill="url(#tfg-steel-dark)" />
+              <line x1="5" y1="163" x2="49" y2="119" stroke="#94a3b8" stroke-opacity="0.35" stroke-width="1" />
+            </g>
+          </svg>
+
+          <div class="flex flex-col leading-none font-display">
+            <span class="text-[11px] uppercase tracking-[0.22em] text-slate-400 font-medium">The</span>
+            <span class="text-xl sm:text-2xl font-bold tracking-tight text-white">Forsyth</span>
+            <span class="text-xs sm:text-[13px] tracking-[0.12em] text-slate-300 font-medium">Group LLC</span>
+          </div>
+        </a>
+
+        <!-- Center Navigation -->
+        <nav class="hidden md:flex items-center space-x-8 lg:space-x-10 text-sm font-medium" aria-label="Primary Navigation">
+          <a href="#about" class="text-slate-300 hover:text-white transition-colors py-1 border-b-2 border-transparent hover:border-copper-600">
+            About
+          </a>
+          <a href="#expertise" class="text-slate-300 hover:text-white transition-colors py-1 border-b-2 border-transparent hover:border-copper-600">
+            Expertise
+          </a>
+          <a href="#solutions" class="text-slate-300 hover:text-white transition-colors py-1 border-b-2 border-transparent hover:border-copper-600">
+            Solutions
+          </a>
+          <a href="#contact" class="text-slate-300 hover:text-white transition-colors py-1 border-b-2 border-transparent hover:border-copper-600">
+            Contact
+          </a>
+        </nav>
+
+        <!-- Right Header Button: Partner Portal / Client Access -->
+        <div class="hidden md:flex items-center gap-4">
+          <a
+            href="https://acapa.forsythgroup.org"
+            class="inline-flex items-center gap-2.5 px-4 py-2 rounded-lg text-xs font-medium tracking-wide text-slate-200 bg-slate-800/90 hover:bg-slate-800 border border-slate-700/80 hover:border-copper-600/60 transition-all duration-200 shadow-sm group"
+            title="Authorized Client &amp; Conference Platform Access"
+          >
+            <span class="w-1.5 h-1.5 rounded-full bg-copper-500 group-hover:scale-125 transition-transform"></span>
+            <span>Client Access</span>
+            <svg class="w-3.5 h-3.5 text-slate-400 group-hover:text-copper-400 group-hover:translate-x-0.5 transition-all" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+            </svg>
+          </a>
+        </div>
+
+        <!-- Mobile Menu Button -->
+        <div class="flex md:hidden">
+          <button
+            id="mobile-menu-btn"
+            type="button"
+            class="inline-flex items-center justify-center p-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 border border-slate-700/70 focus:outline-none focus:ring-2 focus:ring-copper-600"
+            aria-expanded="false"
+            aria-controls="mobile-menu"
+            aria-label="Toggle navigation menu"
+          >
+            <svg id="menu-icon-open" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+            </svg>
+            <svg id="menu-icon-close" class="w-6 h-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Mobile Navigation Drawer -->
+    <div id="mobile-menu" class="hidden md:hidden border-t border-slate-800 bg-slate-900/98 backdrop-blur-xl">
+      <div class="px-4 pt-3 pb-6 space-y-1">
+        <a href="#about" class="mobile-nav-link block px-3 py-2.5 rounded-lg text-base font-medium text-slate-200 hover:text-white hover:bg-slate-800/70">About</a>
+        <a href="#expertise" class="mobile-nav-link block px-3 py-2.5 rounded-lg text-base font-medium text-slate-200 hover:text-white hover:bg-slate-800/70">Expertise</a>
+        <a href="#solutions" class="mobile-nav-link block px-3 py-2.5 rounded-lg text-base font-medium text-slate-200 hover:text-white hover:bg-slate-800/70">Solutions</a>
+        <a href="#contact" class="mobile-nav-link block px-3 py-2.5 rounded-lg text-base font-medium text-slate-200 hover:text-white hover:bg-slate-800/70">Contact</a>
+        <div class="pt-3 mt-3 border-t border-slate-800">
+          <a
+            href="https://acapa.forsythgroup.org"
+            class="flex items-center justify-between w-full px-4 py-3 rounded-lg text-sm font-medium text-slate-200 bg-slate-800/90 border border-slate-700 hover:border-copper-600/60"
+          >
+            <span class="flex items-center gap-2.5">
+              <span class="w-2 h-2 rounded-full bg-copper-500"></span>
+              <span>Client Access Portal</span>
+            </span>
+            <span class="font-mono text-xs text-copper-400">acapa.forsythgroup.org &rarr;</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- ==================== HERO SECTION ==================== -->
+    <section class="relative overflow-hidden pt-16 pb-24 sm:pt-24 sm:pb-32 lg:pt-28 lg:pb-36 bg-architectural-grid">
+      <!-- Ambient Radial Spotlights -->
+      <div class="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 w-[900px] h-[450px] bg-copper-600/10 rounded-full blur-[130px]" aria-hidden="true"></div>
+      <div class="pointer-events-none absolute top-1/3 -right-32 w-[500px] h-[500px] bg-slate-800/60 rounded-full blur-[100px]" aria-hidden="true"></div>
+
+      <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-10 items-center">
+          
+          <!-- Left Column: Authoritative Value Proposition -->
+          <div class="lg:col-span-7 xl:col-span-8">
+            <div class="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-slate-800/80 border border-slate-700/80 mb-7">
+              <span class="w-2 h-2 rounded-full bg-copper-500"></span>
+              <span class="text-xs font-mono uppercase tracking-[0.18em] text-copper-400">Established Systems Engineering &amp; Advisory</span>
+            </div>
+
+            <h1 class="font-display text-3xl sm:text-5xl lg:text-[3.35rem] font-bold tracking-tight text-white leading-[1.12]">
+              Over 35 Years of Engineering Excellence in <span class="text-copper-gradient">Custom Enterprise Software</span>
+            </h1>
+
+            <p class="mt-6 text-lg sm:text-xl text-[#94a3b8] leading-relaxed max-w-3xl font-normal">
+              The Forsyth Group LLC delivers high-reliability software architecture, bespoke web platforms, and tailored event management technologies for professional associations and complex organizations.
+            </p>
+
+            <!-- Action Buttons -->
+            <div class="mt-10 flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
+              <a
+                href="#solutions"
+                class="inline-flex items-center justify-center gap-2.5 px-7 py-4 rounded-lg text-sm font-semibold tracking-wide text-white bg-copper-gradient shadow-copper-glow hover:shadow-lg transition-all duration-200"
+              >
+                <span>Our Solutions</span>
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 13.5L12 21m0 0l-7.5-7.5M12 21V3" />
+                </svg>
+              </a>
+              <a
+                href="#contact"
+                class="inline-flex items-center justify-center gap-2.5 px-7 py-4 rounded-lg text-sm font-semibold tracking-wide text-slate-200 bg-slate-800/80 hover:bg-slate-800 border border-slate-700 hover:border-copper-600/60 transition-all duration-200"
+              >
+                <span>Contact Us</span>
+                <svg class="w-4 h-4 text-copper-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+                </svg>
+              </a>
+            </div>
+
+            <!-- Executive Pillar Metrics -->
+            <div class="mt-14 pt-8 border-t border-slate-800/90 grid grid-cols-3 gap-6 max-w-2xl">
+              <div>
+                <div class="font-display text-2xl sm:text-3xl font-bold text-white tracking-tight">35<span class="text-copper-500">+</span> Years</div>
+                <div class="mt-1 text-xs sm:text-sm text-[#94a3b8]">Principal Engineering Leadership</div>
+              </div>
+              <div class="border-l border-slate-800 pl-6">
+                <div class="font-display text-2xl sm:text-3xl font-bold text-white tracking-tight">Full-Stack</div>
+                <div class="mt-1 text-xs sm:text-sm text-[#94a3b8]">Cloud &amp; Systems Architecture</div>
+              </div>
+              <div class="border-l border-slate-800 pl-6">
+                <div class="font-display text-2xl sm:text-3xl font-bold text-white tracking-tight">Bespoke</div>
+                <div class="mt-1 text-xs sm:text-sm text-[#94a3b8]">Association &amp; Partner Platforms</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column: Architectural Truss & Systems Blueprint Card -->
+          <div class="lg:col-span-5 xl:col-span-4">
+            <div class="enterprise-card rounded-2xl p-6 sm:p-8 shadow-card-elevated relative overflow-hidden">
+              <div class="absolute top-0 right-0 w-40 h-40 bg-copper-600/10 rounded-full blur-2xl pointer-events-none"></div>
+
+              <div class="flex items-center justify-between pb-5 mb-6 border-b border-slate-800">
+                <div>
+                  <span class="text-[11px] font-mono uppercase tracking-[0.2em] text-copper-400 block">Architectural Standard</span>
+                  <h2 class="font-display text-lg font-semibold text-white mt-0.5">Enterprise System Foundations</h2>
+                </div>
+                <!-- Miniature Emblem Badge -->
+                <div class="w-10 h-10 rounded-lg bg-slate-900/90 border border-slate-700/80 flex items-center justify-center">
+                  <span class="w-3.5 h-3.5 rounded-full bg-copper-gradient shadow-sm"></span>
+                </div>
+              </div>
+
+              <!-- Architectural Layers Diagram -->
+              <div class="space-y-3.5">
+                <div class="p-4 rounded-xl bg-slate-900/85 border border-slate-800/90 hover:border-copper-600/40 transition-colors">
+                  <div class="flex items-center justify-between text-xs font-mono text-copper-400 mb-1">
+                    <span>01 // ARCHITECTURE</span>
+                    <span>HIGH-RELIABILITY</span>
+                  </div>
+                  <div class="text-sm font-semibold text-white">Resilient Domain &amp; Data Modeling</div>
+                  <p class="text-xs text-[#94a3b8] mt-1 leading-relaxed">
+                    Strict data integrity, role-based access control, and fault-tolerant service design built for multi-year institutional lifecycles.
+                  </p>
+                </div>
+
+                <div class="p-4 rounded-xl bg-slate-900/85 border border-slate-800/90 hover:border-copper-600/40 transition-colors">
+                  <div class="flex items-center justify-between text-xs font-mono text-copper-400 mb-1">
+                    <span>02 // OPERATIONS</span>
+                    <span>REAL-TIME PRECISION</span>
+                  </div>
+                  <div class="text-sm font-semibold text-white">Live Event &amp; Evaluation Engines</div>
+                  <p class="text-xs text-[#94a3b8] mt-1 leading-relaxed">
+                    Zero-friction attendee scheduling, session telemetry, and structured evaluation pipelines under peak concurrency.
+                  </p>
+                </div>
+
+                <div class="p-4 rounded-xl bg-slate-900/85 border border-slate-800/90 hover:border-copper-600/40 transition-colors">
+                  <div class="flex items-center justify-between text-xs font-mono text-copper-400 mb-1">
+                    <span>03 // GOVERNANCE</span>
+                    <span>EXECUTIVE ADVISORY</span>
+                  </div>
+                  <div class="text-sm font-semibold text-white">Long-Term Technical Stewardship</div>
+                  <p class="text-xs text-[#94a3b8] mt-1 leading-relaxed">
+                    Direct senior engineering oversight from initial requirements discovery through production governance.
+                  </p>
+                </div>
+              </div>
+
+              <div class="mt-6 pt-5 border-t border-slate-800/80 flex items-center justify-between text-xs text-[#94a3b8]">
+                <span>The Forsyth Group LLC</span>
+                <span class="font-mono text-slate-300">EST. 35+ YRS EXPERIENCE</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <div class="copper-divider"></div>
+
+    <!-- ==================== CORE EXPERTISE & SOLUTIONS SECTION ==================== -->
+    <section id="expertise" class="py-20 sm:py-28 bg-slate-950/60 relative">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Section Header -->
+        <div class="max-w-3xl">
+          <div class="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-[0.2em] text-copper-500 mb-3">
+            <span>// Core Capabilities</span>
+          </div>
+          <h2 class="font-display text-3xl sm:text-4xl font-bold text-white tracking-tight">
+            Core Expertise &amp; Enterprise Solutions
+          </h2>
+          <p class="mt-4 text-base sm:text-lg text-[#94a3b8] leading-relaxed">
+            We architect, build, and govern mission-critical digital systems tailored to the operational realities of professional associations, academic bodies, and complex enterprises.
+          </p>
+        </div>
+
+        <!-- 3 Structured Feature Cards -->
+        <div class="mt-14 grid grid-cols-1 lg:grid-cols-3 gap-8">
+          
+          <!-- Card 1: Custom Software Architecture -->
+          <article class="enterprise-card rounded-2xl p-8 flex flex-col justify-between">
+            <div>
+              <div class="w-12 h-12 rounded-xl bg-slate-900 border border-copper-600/40 flex items-center justify-center mb-6 shadow-inner">
+                <svg class="w-6 h-6 text-copper-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M21 7.5l-9-5.25L3 7.5m18 0l-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9" />
+                </svg>
+              </div>
+
+              <div class="text-xs font-mono uppercase tracking-widest text-copper-400 mb-2">01 / Systems Engineering</div>
+              <h3 class="font-display text-xl font-bold text-white">
+                Custom Software Architecture
+              </h3>
+              <p class="mt-3.5 text-[#94a3b8] text-sm sm:text-base leading-relaxed">
+                Purpose-built web and mobile systems engineered for scalability, security, and long-term maintainability.
+              </p>
+            </div>
+
+            <ul class="mt-8 pt-6 border-t border-slate-800/80 space-y-2.5 text-xs sm:text-sm text-slate-300">
+              <li class="flex items-center gap-2.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-copper-500 flex-shrink-0"></span>
+                <span>Bespoke web &amp; cross-platform mobile applications</span>
+              </li>
+              <li class="flex items-center gap-2.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-copper-500 flex-shrink-0"></span>
+                <span>Security-first authentication &amp; role governance</span>
+              </li>
+              <li class="flex items-center gap-2.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-copper-500 flex-shrink-0"></span>
+                <span>Clean, maintainable codebases built for longevity</span>
+              </li>
+            </ul>
+          </article>
+
+          <!-- Card 2: Event & Association Technologies -->
+          <article class="enterprise-card rounded-2xl p-8 flex flex-col justify-between">
+            <div>
+              <div class="w-12 h-12 rounded-xl bg-slate-900 border border-copper-600/40 flex items-center justify-center mb-6 shadow-inner">
+                <svg class="w-6 h-6 text-copper-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12V15zm0 2.25h.008v.008H12v-.008zM9.75 15h.008v.008H9.75V15zm0 2.25h.008v.008H9.75v-.008zM7.5 15h.008v.008H7.5V15zm0 2.25h.008v.008H7.5v-.008zm6.75-4.5h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008zm2.25-4.5h.008v.008H16.5v-.008zm0 2.25h.008v.008H16.5V15z" />
+                </svg>
+              </div>
+
+              <div class="text-xs font-mono uppercase tracking-widest text-copper-400 mb-2">02 / Institutional Platforms</div>
+              <h3 class="font-display text-xl font-bold text-white">
+                Event &amp; Association Technologies
+              </h3>
+              <p class="mt-3.5 text-[#94a3b8] text-sm sm:text-base leading-relaxed">
+                Specialized digital tools for live conference navigation, real-time schedule management, session tracking, and structured evaluation systems.
+              </p>
+            </div>
+
+            <ul class="mt-8 pt-6 border-t border-slate-800/80 space-y-2.5 text-xs sm:text-sm text-slate-300">
+              <li class="flex items-center gap-2.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-copper-500 flex-shrink-0"></span>
+                <span>Dynamic conference agendas &amp; speaker directories</span>
+              </li>
+              <li class="flex items-center gap-2.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-copper-500 flex-shrink-0"></span>
+                <span>Real-time session tracking &amp; attendee navigation</span>
+              </li>
+              <li class="flex items-center gap-2.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-copper-500 flex-shrink-0"></span>
+                <span>Integrated session feedback &amp; accreditation workflows</span>
+              </li>
+            </ul>
+          </article>
+
+          <!-- Card 3: Workflow Automation & Evaluation Pipelines -->
+          <article class="enterprise-card rounded-2xl p-8 flex flex-col justify-between">
+            <div>
+              <div class="w-12 h-12 rounded-xl bg-slate-900 border border-copper-600/40 flex items-center justify-center mb-6 shadow-inner">
+                <svg class="w-6 h-6 text-copper-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3v11.25A2.25 2.25 0 006 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0118 16.5h-2.25m-7.5 0h7.5m-7.5 0l-1 3m8.5-3l1 3m0 0l.5 1.5m-.5-1.5h-9.5m0 0l-.5 1.5M9 11.25v1.5M12 9v3.75m3-6v6" />
+                </svg>
+              </div>
+
+              <div class="text-xs font-mono uppercase tracking-widest text-copper-400 mb-2">03 / Process Modernization</div>
+              <h3 class="font-display text-xl font-bold text-white">
+                Workflow Automation &amp; Evaluation Pipelines
+              </h3>
+              <p class="mt-3.5 text-[#94a3b8] text-sm sm:text-base leading-relaxed">
+                Transforming legacy organizational processes into streamlined, cloud-native digital platforms.
+              </p>
+            </div>
+
+            <ul class="mt-8 pt-6 border-t border-slate-800/80 space-y-2.5 text-xs sm:text-sm text-slate-300">
+              <li class="flex items-center gap-2.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-copper-500 flex-shrink-0"></span>
+                <span>Replacement of manual spreadsheet &amp; paper workflows</span>
+              </li>
+              <li class="flex items-center gap-2.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-copper-500 flex-shrink-0"></span>
+                <span>Automated evaluation collection &amp; reporting analytics</span>
+              </li>
+              <li class="flex items-center gap-2.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-copper-500 flex-shrink-0"></span>
+                <span>Cloud-native reliability with zero administrative overhead</span>
+              </li>
+            </ul>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <div class="copper-divider"></div>
+
+    <!-- ==================== DEDICATED CLIENT SOLUTIONS (SUBTLE HIGHLIGHT) ==================== -->
+    <section id="solutions" class="py-20 sm:py-28 bg-slate-900 relative">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="enterprise-card rounded-3xl p-8 sm:p-12 lg:p-14 relative overflow-hidden">
+          <!-- Subtle Copper Corner Accent -->
+          <div class="pointer-events-none absolute -bottom-24 -right-24 w-80 h-80 bg-copper-600/10 rounded-full blur-3xl" aria-hidden="true"></div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+            
+            <!-- Left Description -->
+            <div class="lg:col-span-7">
+              <div class="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-copper-600/10 border border-copper-600/30 text-copper-400 text-xs font-mono uppercase tracking-widest mb-4">
+                <span>Partner Platform Environments</span>
+              </div>
+
+              <h2 class="font-display text-2xl sm:text-3xl lg:text-4xl font-bold text-white tracking-tight">
+                Custom Client Deployments
+              </h2>
+
+              <p class="mt-4 text-[#94a3b8] text-base sm:text-lg leading-relaxed">
+                The Forsyth Group LLC develops dedicated digital platforms in direct partnership with educational institutions and professional associations. These custom-engineered environments support full-lifecycle conference operations, real-time schedule coordination, and structured session evaluation workflows.
+              </p>
+
+              <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-slate-300">
+                <div class="flex items-start gap-3">
+                  <svg class="w-5 h-5 text-copper-500 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span>Dedicated Association Conference Portals</span>
+                </div>
+                <div class="flex items-start gap-3">
+                  <svg class="w-5 h-5 text-copper-500 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span>Structured Session &amp; Program Evaluations</span>
+                </div>
+                <div class="flex items-start gap-3">
+                  <svg class="w-5 h-5 text-copper-500 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span>Mobile-First Attendee Schedule Navigation</span>
+                </div>
+                <div class="flex items-start gap-3">
+                  <svg class="w-5 h-5 text-copper-500 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span>Executive Administrative Reporting</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Access Portal Card -->
+            <div class="lg:col-span-5">
+              <div class="rounded-2xl bg-slate-950/90 border border-slate-800 p-6 sm:p-8 shadow-inner">
+                <div class="flex items-center justify-between pb-4 mb-5 border-b border-slate-800/90">
+                  <span class="text-xs font-mono uppercase tracking-wider text-slate-400">Authorized Portal Access</span>
+                  <span class="inline-flex items-center gap-1.5 text-xs font-mono text-copper-400">
+                    <span class="w-2 h-2 rounded-full bg-copper-500"></span>
+                    Active Environment
+                  </span>
+                </div>
+
+                <h3 class="font-display text-lg font-semibold text-white">
+                  ACAPA Conference &amp; Evaluation Platform
+                </h3>
+                <p class="mt-2 text-xs sm:text-sm text-[#94a3b8] leading-relaxed">
+                  Conference attendees, presenters, and authorized association administrators may access the dedicated event schedule and evaluation system directly below.
+                </p>
+
+                <div class="mt-6">
+                  <a
+                    href="https://acapa.forsythgroup.org"
+                    class="w-full inline-flex items-center justify-between px-5 py-3.5 rounded-xl bg-slate-900 hover:bg-slate-800/90 border border-slate-700/90 hover:border-copper-600 transition-all duration-200 group"
+                  >
+                    <div class="flex flex-col text-left">
+                      <span class="text-[11px] font-mono uppercase tracking-wider text-slate-400">Direct Platform Endpoint</span>
+                      <span class="text-sm sm:text-base font-mono font-medium text-copper-400 group-hover:text-copper-300 transition-colors">
+                        acapa.forsythgroup.org
+                      </span>
+                    </div>
+                    <span class="w-9 h-9 rounded-lg bg-copper-600/15 border border-copper-600/40 flex items-center justify-center text-copper-400 group-hover:bg-copper-600 group-hover:text-white transition-all">
+                      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                      </svg>
+                    </span>
+                  </a>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <div class="copper-divider"></div>
+
+    <!-- ==================== LEADERSHIP & EXPERIENCE (ABOUT SECTION) ==================== -->
+    <section id="about" class="py-20 sm:py-28 bg-slate-950/60 relative">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
+          
+          <!-- Left Column: Narrative & Track Record -->
+          <div class="lg:col-span-7">
+            <div class="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-[0.2em] text-copper-500 mb-3">
+              <span>// Leadership &amp; Heritage</span>
+            </div>
+            <h2 class="font-display text-3xl sm:text-4xl font-bold text-white tracking-tight">
+              Decades of Proven Technical Leadership
+            </h2>
+
+            <div class="mt-6 space-y-5 text-base sm:text-lg text-[#94a3b8] leading-relaxed">
+              <p>
+                With a track record spanning more than 35 years in commercial and institutional software engineering, <strong class="text-white font-semibold">The Forsyth Group LLC</strong> brings seasoned architectural judgment to every engagement. We work directly with executive leadership, boards, and program directors to translate intricate operational requirements into dependable software systems.
+              </p>
+              <p>
+                Throughout three decades of industry evolution—from foundational enterprise client-server environments to modern distributed cloud platforms—our engineering philosophy has remained constant: <span class="text-slate-200">disciplined systems design, uncompromising reliability, and software that serves the organization without unnecessary complexity.</span>
+              </p>
+              <p>
+                Every platform we deliver is architected for clarity, security, and operational longevity, ensuring that professional associations and enterprise partners can rely on their digital infrastructure year after year.
+              </p>
+            </div>
+          </div>
+
+          <!-- Right Column: Executive Tenets -->
+          <div class="lg:col-span-5 space-y-5">
+            <div class="enterprise-card rounded-2xl p-6 sm:p-7">
+              <div class="flex items-start gap-4">
+                <div class="w-10 h-10 rounded-lg bg-copper-600/15 border border-copper-600/40 flex items-center justify-center flex-shrink-0 text-copper-400 font-mono text-sm font-semibold">
+                  01
+                </div>
+                <div>
+                  <h3 class="font-display text-base sm:text-lg font-semibold text-white">Principal-Led Architecture</h3>
+                  <p class="mt-1.5 text-sm text-[#94a3b8] leading-relaxed">
+                    Every system is designed and overseen by senior engineering leadership with over three decades of hands-on enterprise software delivery.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="enterprise-card rounded-2xl p-6 sm:p-7">
+              <div class="flex items-start gap-4">
+                <div class="w-10 h-10 rounded-lg bg-copper-600/15 border border-copper-600/40 flex items-center justify-center flex-shrink-0 text-copper-400 font-mono text-sm font-semibold">
+                  02
+                </div>
+                <div>
+                  <h3 class="font-display text-base sm:text-lg font-semibold text-white">Alignment with Organizational Goals</h3>
+                  <p class="mt-1.5 text-sm text-[#94a3b8] leading-relaxed">
+                    Technology decisions are grounded in governance, member experience, and measurable operational efficiency rather than transient trends.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="enterprise-card rounded-2xl p-6 sm:p-7">
+              <div class="flex items-start gap-4">
+                <div class="w-10 h-10 rounded-lg bg-copper-600/15 border border-copper-600/40 flex items-center justify-center flex-shrink-0 text-copper-400 font-mono text-sm font-semibold">
+                  03
+                </div>
+                <div>
+                  <h3 class="font-display text-base sm:text-lg font-semibold text-white">Enduring Operational Reliability</h3>
+                  <p class="mt-1.5 text-sm text-[#94a3b8] leading-relaxed">
+                    Systems engineered for predictable performance during high-visibility annual conferences, evaluations, and daily institutional workflows.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <div class="copper-divider"></div>
+
+    <!-- ==================== CONTACT SECTION ==================== -->
+    <section id="contact" class="py-20 sm:py-28 bg-slate-900 relative">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div class="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-[0.2em] text-copper-500 mb-3">
+          <span>// Executive Inquiries</span>
+        </div>
+        <h2 class="font-display text-3xl sm:text-4xl font-bold text-white tracking-tight">
+          Engage with The Forsyth Group LLC
+        </h2>
+        <p class="mt-4 text-base sm:text-lg text-[#94a3b8] max-w-2xl mx-auto leading-relaxed">
+          To discuss custom software architecture, association event platforms, or executive technology consulting, please contact our principal team directly.
+        </p>
+
+        <div class="mt-10 enterprise-card rounded-2xl p-8 sm:p-10 max-w-2xl mx-auto">
+          <div class="flex flex-col sm:flex-row items-center justify-between gap-6">
+            <div class="text-center sm:text-left">
+              <div class="text-xs font-mono uppercase tracking-widest text-slate-400">Direct Electronic Correspondence</div>
+              <a
+                href="mailto:contact@forsythgroup.org"
+                class="mt-1.5 inline-block font-display text-xl sm:text-2xl font-bold text-white hover:text-copper-400 transition-colors"
+              >
+                contact@forsythgroup.org
+              </a>
+              <p class="mt-1 text-xs text-[#94a3b8]">
+                Architecture Inquiries &bull; Institutional Partnerships &bull; Client Support
+              </p>
+            </div>
+
+            <a
+              href="mailto:contact@forsythgroup.org?subject=Enterprise%20Inquiry%20%E2%80%94%20The%20Forsyth%20Group%20LLC"
+              class="inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-lg text-sm font-semibold text-white bg-copper-gradient shadow-copper-glow hover:shadow-lg transition-all duration-200 flex-shrink-0"
+            >
+              <span>Send Inquiry</span>
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer class="border-t border-slate-800/90 bg-slate-950 py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-8">
+        
+        <!-- Brand Identity -->
+        <div class="flex items-center gap-3">
+          <svg class="w-7 h-10 flex-shrink-0" viewBox="0 0 120 168" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <g stroke="url(#tfg-copper-rod)" stroke-width="5.5" stroke-linecap="round">
+              <line x1="48" y1="27" x2="68" y2="27" />
+              <line x1="27" y1="48" x2="27" y2="63" />
+              <line x1="47" y1="65" x2="69" y2="47" />
+              <line x1="89" y1="48" x2="89" y2="64" />
+              <line x1="48" y1="84" x2="67" y2="84" />
+              <line x1="27" y1="105" x2="27" y2="120" />
+              <line x1="47" y1="122" x2="73" y2="99" />
+            </g>
+            <rect x="5" y="5" width="44" height="44" fill="url(#tfg-steel-light)" stroke="url(#tfg-bevel)" stroke-width="2" />
+            <polygon points="5,49 49,5 49,49" fill="url(#tfg-steel-dark)" />
+            <rect x="67" y="5" width="44" height="44" fill="url(#tfg-steel-light)" stroke="url(#tfg-bevel)" stroke-width="2" />
+            <rect x="75" y="13" width="28" height="28" fill="#1e293b" stroke="#94a3b8" stroke-opacity="0.45" stroke-width="1.5" />
+            <rect x="5" y="62" width="44" height="44" fill="url(#tfg-steel-light)" stroke="url(#tfg-bevel)" stroke-width="2" />
+            <polygon points="5,106 49,62 49,106" fill="url(#tfg-steel-dark)" />
+            <circle cx="89" cy="84" r="22.5" fill="url(#tfg-copper-sphere)" />
+            <rect x="5" y="119" width="44" height="44" fill="url(#tfg-steel-light)" stroke="url(#tfg-bevel)" stroke-width="2" />
+            <polygon points="5,163 49,119 49,163" fill="url(#tfg-steel-dark)" />
+          </svg>
+          <div>
+            <span class="font-display font-bold text-white tracking-tight text-base">The Forsyth Group LLC</span>
+            <span class="block text-xs text-[#94a3b8]">Enterprise Software Architecture &amp; Technology Consulting</span>
+          </div>
+        </div>
+
+        <!-- Footer Navigation & Contact -->
+        <div class="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-xs sm:text-sm text-[#94a3b8]">
+          <a href="#about" class="hover:text-white transition-colors">About</a>
+          <a href="#expertise" class="hover:text-white transition-colors">Expertise</a>
+          <a href="#solutions" class="hover:text-white transition-colors">Solutions</a>
+          <a href="https://acapa.forsythgroup.org" class="hover:text-copper-400 transition-colors">Client Access</a>
+          <a href="mailto:contact@forsythgroup.org" class="text-copper-400 hover:text-copper-300 font-mono transition-colors">
+            contact@forsythgroup.org
+          </a>
+        </div>
+
+      </div>
+
+      <div class="mt-8 pt-8 border-t border-slate-900 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+        <p>&copy; 2026 The Forsyth Group LLC. All rights reserved.</p>
+        <p class="font-mono text-[11px] text-slate-500">forsythgroup.org</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Minimal Mobile Navigation Script -->
+  <script>
+    (function () {
+      const btn = document.getElementById('mobile-menu-btn');
+      const menu = document.getElementById('mobile-menu');
+      const iconOpen = document.getElementById('menu-icon-open');
+      const iconClose = document.getElementById('menu-icon-close');
+      const mobileLinks = document.querySelectorAll('.mobile-nav-link');
+
+      if (!btn || !menu) return;
+
+      function toggleMenu() {
+        const isHidden = menu.classList.contains('hidden');
+        menu.classList.toggle('hidden', !isHidden);
+        iconOpen.classList.toggle('hidden', isHidden);
+        iconClose.classList.toggle('hidden', !isHidden);
+        btn.setAttribute('aria-expanded', String(isHidden));
+      }
+
+      btn.addEventListener('click', toggleMenu);
+
+      mobileLinks.forEach(function (link) {
+        link.addEventListener('click', function () {
+          if (!menu.classList.contains('hidden')) {
+            toggleMenu();
+          }
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
