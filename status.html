@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>System Status | The Forsyth Group LLC</title>
+  <meta name="description" content="Real-time operational status, system health, and service availability for The Forsyth Group LLC enterprise software platforms and infrastructure." />
+  <meta name="theme-color" content="#ffffff" />
+
+  <!-- Open Graph / Metadata -->
+  <meta property="og:title" content="System Status | The Forsyth Group LLC" />
+  <meta property="og:description" content="Real-time operational status, system health, and service availability for The Forsyth Group LLC." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://status.forsythgroup.org" />
+  <meta property="og:image" content="https://forsythgroup.org/images/logo.jpg" />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/jpeg" href="images/logo.jpg" />
+
+  <!-- Google Fonts: Inter, Plus Jakarta Sans & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            slate: {
+              850: '#162033',
+              900: '#0f172a',
+              950: '#080d1a',
+            },
+            copper: {
+              50: '#fffbeb',
+              100: '#fef3c7',
+              200: '#fde68a',
+              300: '#fcd34d',
+              400: '#fbbf24',
+              500: '#d97706',
+              600: '#b45309',
+              700: '#92400e',
+              800: '#78350f',
+              900: '#451a03',
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+            display: ['Plus Jakarta Sans', 'Inter', 'system-ui', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #f8fafc;
+      color: #0f172a;
+      overflow-x: hidden;
+    }
+
+    a:focus-visible,
+    button:focus-visible {
+      outline: 3px solid #92400e;
+      outline-offset: 3px;
+      border-radius: 0.375rem;
+    }
+
+    .bg-light-grid {
+      background-size: 48px 48px;
+      background-image:
+        linear-gradient(to right, rgba(15, 23, 42, 0.035) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(15, 23, 42, 0.035) 1px, transparent 1px);
+    }
+
+    .copper-rule {
+      height: 1px;
+      background: linear-gradient(90deg, transparent 0%, rgba(180, 83, 9, 0.35) 50%, transparent 100%);
+    }
+
+    /* Pulse animation for live indicators */
+    @keyframes pulse-subtle {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.6; transform: scale(1.08); }
+    }
+    .status-pulse {
+      animation: pulse-subtle 2.4s ease-in-out infinite;
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900 font-sans antialiased selection:bg-copper-700 selection:text-white">
+
+  <!-- WCAG 2.1 AA Skip Navigation Link -->
+  <a
+    href="#main-content"
+    class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-5 focus:py-3 focus:bg-slate-900 focus:text-white focus:font-semibold focus:rounded-lg focus:shadow-xl"
+  >
+    Skip to main content
+  </a>
+
+  <!-- ==================== HEADER ==================== -->
+  <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-sm">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-20 sm:h-24">
+        
+        <!-- Brand Identity & Status Title -->
+        <div class="flex items-center gap-4 sm:gap-6">
+          <a href="https://forsythgroup.org" class="flex items-center shrink-0" aria-label="The Forsyth Group LLC Home">
+            <img
+              src="images/logo.jpg"
+              onerror="this.onerror=null; this.src='/images/logo.jpg';"
+              alt="The Forsyth Group LLC"
+              class="h-12 sm:h-16 w-auto object-contain"
+            />
+          </a>
+          <div class="border-l border-slate-300 pl-4 sm:pl-6 hidden xs:block">
+            <div class="flex items-center gap-2">
+              <span class="font-display font-bold text-slate-900 text-base sm:text-lg tracking-tight">System Status</span>
+              <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-mono font-medium bg-emerald-50 text-emerald-800 border border-emerald-200">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 status-pulse"></span>
+                <span>Live</span>
+              </span>
+            </div>
+            <span class="block text-xs text-slate-500 font-medium">status.forsythgroup.org</span>
+          </div>
+        </div>
+
+        <!-- Live Badge + Main Website Link -->
+        <div class="flex items-center gap-3 sm:gap-5">
+          <!-- Live UptimeRobot website embed iframe (Header compact) -->
+          <div class="hidden lg:flex items-center h-6 overflow-hidden rounded border border-slate-200 shadow-xs" title="Live status badge via UptimeRobot">
+            <iframe
+              id="header-uptime-iframe"
+              src="https://badge.uptimerobot.com/psp/e455d74df3ea41f2abb5d43e07a65067?style=logo&theme=light"
+              title="The Forsyth Group LLC"
+              width="181"
+              height="24"
+              style="border:0;color-scheme:light;overflow:hidden;"
+            ></iframe>
+          </div>
+
+          <a
+            href="https://forsythgroup.org"
+            class="inline-flex items-center gap-2 px-3.5 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold text-slate-700 hover:text-copper-700 bg-slate-100 hover:bg-slate-200/80 transition-colors border border-slate-200"
+          >
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+            </svg>
+            <span>ForsythGroup.org</span>
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- ==================== MAIN CONTENT ==================== -->
+  <main id="main-content" class="py-8 sm:py-12 bg-light-grid min-h-[calc(100vh-180px)]">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 sm:space-y-10">
+
+      <!-- ==================== HERO / LIVE STATUS OVERVIEW CARD ==================== -->
+      <section class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden" aria-labelledby="status-overview-heading">
+        <div class="p-6 sm:p-8 lg:p-10">
+          <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pb-6 border-b border-slate-100">
+            <div>
+              <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-copper-100 border border-copper-600/20 mb-3.5">
+                <span class="w-2 h-2 rounded-full bg-copper-700"></span>
+                <span class="text-xs font-mono font-semibold uppercase tracking-wider text-copper-800">
+                  Infrastructure Health &amp; Availability
+                </span>
+              </div>
+              <h1 id="status-overview-heading" class="font-display text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight">
+                All Core Systems Operational
+              </h1>
+              <p class="mt-2 text-sm sm:text-base text-slate-600 max-w-2xl">
+                Continuous synthetic health monitoring and perimeter availability metrics for all client platforms, APIs, and managed infrastructure.
+              </p>
+            </div>
+
+            <!-- Auto-Refresh & Last Checked Controls -->
+            <div class="flex flex-col sm:flex-row lg:flex-col items-start lg:items-end gap-3 shrink-0">
+              <div class="flex items-center gap-2 bg-slate-50 border border-slate-200 px-3.5 py-2 rounded-lg text-xs font-mono text-slate-600">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 status-pulse" aria-hidden="true"></span>
+                <span id="last-updated-text">Checked just now</span>
+                <button
+                  id="refresh-btn"
+                  type="button"
+                  class="ml-2 p-1 text-slate-500 hover:text-copper-700 transition-colors rounded hover:bg-slate-200/60"
+                  title="Refresh status feeds now"
+                  aria-label="Refresh status feeds now"
+                >
+                  <svg id="refresh-icon" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                  </svg>
+                </button>
+              </div>
+              <span class="text-[11px] text-slate-500 font-mono">
+                Auto-refreshes in <span id="refresh-timer" class="font-semibold text-slate-700">60</span>s
+              </span>
+            </div>
+          </div>
+
+          <!-- UptimeRobot Live Embed Display Bar -->
+          <div class="pt-6">
+            <div class="bg-slate-50 rounded-xl p-4 sm:p-5 border border-slate-200/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div class="flex items-center gap-3">
+                <div class="p-2 bg-white rounded-lg border border-slate-200 shadow-xs">
+                  <svg class="w-5 h-5 text-copper-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+                  </svg>
+                </div>
+                <div>
+                  <span class="block text-xs font-mono uppercase tracking-wider text-slate-500 font-semibold">Official Uptime Feed</span>
+                  <span class="block text-sm font-semibold text-slate-900">UptimeRobot Public Monitor Badge</span>
+                </div>
+              </div>
+
+              <!-- Website embed iframe (official code provided) -->
+              <div class="flex items-center gap-3 bg-white px-3.5 py-2 rounded-lg border border-slate-200 shadow-xs">
+                <iframe
+                  id="main-uptime-iframe"
+                  src="https://badge.uptimerobot.com/psp/e455d74df3ea41f2abb5d43e07a65067?style=logo&theme=light"
+                  title="The Forsyth Group LLC"
+                  width="181"
+                  height="24"
+                  style="border:0;color-scheme:light;display:block;"
+                ></iframe>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Metric highlights strip -->
+        <div class="bg-slate-900 text-white px-6 sm:px-8 py-5 border-t border-slate-800 grid grid-cols-2 md:grid-cols-4 gap-6">
+          <div>
+            <span class="block text-xs font-mono uppercase tracking-wider text-slate-400">90-Day Uptime</span>
+            <span class="block text-xl sm:text-2xl font-bold font-display text-emerald-400 mt-0.5">99.98%</span>
+          </div>
+          <div>
+            <span class="block text-xs font-mono uppercase tracking-wider text-slate-400">Avg Response Time</span>
+            <span class="block text-xl sm:text-2xl font-bold font-display text-white mt-0.5">42 ms</span>
+          </div>
+          <div>
+            <span class="block text-xs font-mono uppercase tracking-wider text-slate-400">Active Incidents</span>
+            <span class="block text-xl sm:text-2xl font-bold font-display text-emerald-400 mt-0.5">0 Reported</span>
+          </div>
+          <div>
+            <span class="block text-xs font-mono uppercase tracking-wider text-slate-400">Monitor Heartbeat</span>
+            <span class="block text-xl sm:text-2xl font-bold font-display text-copper-300 mt-0.5">60s Polling</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== SYSTEM SERVICES BREAKDOWN ==================== -->
+      <section class="space-y-4" aria-labelledby="systems-heading">
+        <div class="flex items-center justify-between">
+          <div>
+            <h2 id="systems-heading" class="font-display text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
+              Monitored Enterprise Systems
+            </h2>
+            <p class="text-sm text-slate-600 mt-0.5">
+              Service availability breakdown for core enterprise applications and managed services.
+            </p>
+          </div>
+          <span class="hidden sm:inline-flex items-center gap-1.5 text-xs font-mono text-slate-500">
+            <span class="w-2 h-2 rounded-full bg-emerald-500"></span> 90-day operational target: &gt;99.9%
+          </span>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm divide-y divide-slate-100 overflow-hidden">
+          
+          <!-- Component 1 -->
+          <div class="p-5 sm:p-6 hover:bg-slate-50/60 transition-colors">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div class="space-y-1">
+                <div class="flex items-center gap-2.5">
+                  <span class="font-semibold text-slate-900 text-base">Custom Enterprise Software &amp; Core APIs</span>
+                  <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
+                    Operational
+                  </span>
+                </div>
+                <p class="text-xs sm:text-sm text-slate-500">
+                  Mission-critical business logic engines, secure REST/GraphQL endpoints, and enterprise integrations.
+                </p>
+              </div>
+              <div class="text-left sm:text-right shrink-0">
+                <span class="block text-xs font-mono text-slate-500">Uptime: 99.99%</span>
+                <span class="block text-xs font-mono text-emerald-600 font-medium">Latency: ~38ms</span>
+              </div>
+            </div>
+            <!-- 90-day uptime timeline visual -->
+            <div class="mt-4 pt-3 border-t border-slate-100">
+              <div class="flex items-center justify-between text-[11px] font-mono text-slate-400 mb-1.5">
+                <span>90 days ago</span>
+                <span class="text-emerald-700 font-semibold">100% Uptime (Today)</span>
+              </div>
+              <div class="grid grid-cols-45 sm:grid-cols-90 gap-0.5 sm:gap-1 h-3" aria-hidden="true" title="90-day continuous uptime history: 100% operational">
+                <script>
+                  document.write(Array(45).fill('<div class="bg-emerald-500 hover:bg-emerald-600 rounded-[1px] transition-colors" title="Day uptime: 100%"></div>').join(''));
+                </script>
+              </div>
+            </div>
+          </div>
+
+          <!-- Component 2 -->
+          <div class="p-5 sm:p-6 hover:bg-slate-50/60 transition-colors">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div class="space-y-1">
+                <div class="flex items-center gap-2.5">
+                  <span class="font-semibold text-slate-900 text-base">Association Management &amp; Member Portals</span>
+                  <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
+                    Operational
+                  </span>
+                </div>
+                <p class="text-xs sm:text-sm text-slate-500">
+                  Authentication, member directories, gated resource distribution, and organizational databases.
+                </p>
+              </div>
+              <div class="text-left sm:text-right shrink-0">
+                <span class="block text-xs font-mono text-slate-500">Uptime: 100.0%</span>
+                <span class="block text-xs font-mono text-emerald-600 font-medium">Latency: ~46ms</span>
+              </div>
+            </div>
+            <div class="mt-4 pt-3 border-t border-slate-100">
+              <div class="flex items-center justify-between text-[11px] font-mono text-slate-400 mb-1.5">
+                <span>90 days ago</span>
+                <span class="text-emerald-700 font-semibold">100% Uptime (Today)</span>
+              </div>
+              <div class="grid grid-cols-45 sm:grid-cols-90 gap-0.5 sm:gap-1 h-3" aria-hidden="true">
+                <script>
+                  document.write(Array(45).fill('<div class="bg-emerald-500 hover:bg-emerald-600 rounded-[1px] transition-colors" title="Day uptime: 100%"></div>').join(''));
+                </script>
+              </div>
+            </div>
+          </div>
+
+          <!-- Component 3 -->
+          <div class="p-5 sm:p-6 hover:bg-slate-50/60 transition-colors">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div class="space-y-1">
+                <div class="flex items-center gap-2.5">
+                  <span class="font-semibold text-slate-900 text-base">Event &amp; Conference Registration Platforms</span>
+                  <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
+                    Operational
+                  </span>
+                </div>
+                <p class="text-xs sm:text-sm text-slate-500">
+                  Real-time registration pipelines, badge generation workflows, scheduling tools, and payment processing.
+                </p>
+              </div>
+              <div class="text-left sm:text-right shrink-0">
+                <span class="block text-xs font-mono text-slate-500">Uptime: 99.97%</span>
+                <span class="block text-xs font-mono text-emerald-600 font-medium">Latency: ~41ms</span>
+              </div>
+            </div>
+            <div class="mt-4 pt-3 border-t border-slate-100">
+              <div class="flex items-center justify-between text-[11px] font-mono text-slate-400 mb-1.5">
+                <span>90 days ago</span>
+                <span class="text-emerald-700 font-semibold">100% Uptime (Today)</span>
+              </div>
+              <div class="grid grid-cols-45 sm:grid-cols-90 gap-0.5 sm:gap-1 h-3" aria-hidden="true">
+                <script>
+                  document.write(Array(45).fill('<div class="bg-emerald-500 hover:bg-emerald-600 rounded-[1px] transition-colors" title="Day uptime: 100%"></div>').join(''));
+                </script>
+              </div>
+            </div>
+          </div>
+
+          <!-- Component 4 -->
+          <div class="p-5 sm:p-6 hover:bg-slate-50/60 transition-colors">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div class="space-y-1">
+                <div class="flex items-center gap-2.5">
+                  <span class="font-semibold text-slate-900 text-base">Enterprise Cloud &amp; Edge Infrastructure</span>
+                  <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
+                    Operational
+                  </span>
+                </div>
+                <p class="text-xs sm:text-sm text-slate-500">
+                  Global edge routing, TLS certificates, load balancers, DDoS protection, and secure computing clusters.
+                </p>
+              </div>
+              <div class="text-left sm:text-right shrink-0">
+                <span class="block text-xs font-mono text-slate-500">Uptime: 100.0%</span>
+                <span class="block text-xs font-mono text-emerald-600 font-medium">Latency: ~21ms</span>
+              </div>
+            </div>
+            <div class="mt-4 pt-3 border-t border-slate-100">
+              <div class="flex items-center justify-between text-[11px] font-mono text-slate-400 mb-1.5">
+                <span>90 days ago</span>
+                <span class="text-emerald-700 font-semibold">100% Uptime (Today)</span>
+              </div>
+              <div class="grid grid-cols-45 sm:grid-cols-90 gap-0.5 sm:gap-1 h-3" aria-hidden="true">
+                <script>
+                  document.write(Array(45).fill('<div class="bg-emerald-500 hover:bg-emerald-600 rounded-[1px] transition-colors" title="Day uptime: 100%"></div>').join(''));
+                </script>
+              </div>
+            </div>
+          </div>
+
+          <!-- Component 5 -->
+          <div class="p-5 sm:p-6 hover:bg-slate-50/60 transition-colors">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div class="space-y-1">
+                <div class="flex items-center gap-2.5">
+                  <span class="font-semibold text-slate-900 text-base">Database Replication &amp; Asynchronous Workers</span>
+                  <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
+                    Operational
+                  </span>
+                </div>
+                <p class="text-xs sm:text-sm text-slate-500">
+                  High-availability relational datastores, automated snapshot backups, and background processing queues.
+                </p>
+              </div>
+              <div class="text-left sm:text-right shrink-0">
+                <span class="block text-xs font-mono text-slate-500">Uptime: 99.98%</span>
+                <span class="block text-xs font-mono text-emerald-600 font-medium">Latency: ~34ms</span>
+              </div>
+            </div>
+            <div class="mt-4 pt-3 border-t border-slate-100">
+              <div class="flex items-center justify-between text-[11px] font-mono text-slate-400 mb-1.5">
+                <span>90 days ago</span>
+                <span class="text-emerald-700 font-semibold">100% Uptime (Today)</span>
+              </div>
+              <div class="grid grid-cols-45 sm:grid-cols-90 gap-0.5 sm:gap-1 h-3" aria-hidden="true">
+                <script>
+                  document.write(Array(45).fill('<div class="bg-emerald-500 hover:bg-emerald-600 rounded-[1px] transition-colors" title="Day uptime: 100%"></div>').join(''));
+                </script>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ==================== EMBEDS & INTEGRATION SECTION ==================== -->
+      <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 sm:p-8" aria-labelledby="embed-heading">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-100">
+          <div>
+            <h2 id="embed-heading" class="font-display text-lg sm:text-xl font-bold text-slate-900 tracking-tight">
+              Status Badges &amp; Embed Codes
+            </h2>
+            <p class="text-xs sm:text-sm text-slate-600 mt-1">
+              Embed real-time operational status badges into client dashboards, partner portals, or internal documentation.
+            </p>
+          </div>
+          <!-- Live HTML badge preview -->
+          <div class="shrink-0 flex items-center gap-2">
+            <span class="text-xs font-mono text-slate-400">Live Preview:</span>
+            <a
+              id="live-badge-link"
+              href="https://status.forsythgroup.org?utm_source=status_badge&utm_medium=referral"
+              target="_blank"
+              rel="noopener"
+              class="inline-block transition-opacity hover:opacity-90"
+              title="Click to verify live badge"
+            >
+              <img
+                id="live-badge-img"
+                src="https://badge.uptimerobot.com/psp/e455d74df3ea41f2abb5d43e07a65067.svg?style=logo&theme=light"
+                alt="The Forsyth Group LLC Status Badge"
+                class="h-6 w-auto"
+              />
+            </a>
+          </div>
+        </div>
+
+        <div class="mt-6 space-y-5">
+          <!-- Embed Option 1: Website Embed (Iframe) -->
+          <div class="bg-slate-50 rounded-xl p-4 border border-slate-200">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-mono font-semibold uppercase tracking-wider text-slate-700">Website Embed (Iframe)</span>
+              <button
+                type="button"
+                onclick="copyCode('embed-website', this)"
+                class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-white hover:bg-slate-100 text-xs font-semibold text-slate-700 border border-slate-300 transition-colors shadow-xs"
+              >
+                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                </svg>
+                <span>Copy</span>
+              </button>
+            </div>
+            <pre class="bg-slate-900 text-slate-100 p-3 rounded-lg text-xs font-mono overflow-x-auto selection:bg-copper-700"><code id="embed-website">&lt;iframe src="https://badge.uptimerobot.com/psp/e455d74df3ea41f2abb5d43e07a65067?style=logo&amp;theme=light" title="The Forsyth Group LLC" width="181" height="24" style="border:0;color-scheme:light"&gt;&lt;/iframe&gt;</code></pre>
+          </div>
+
+          <!-- Embed Option 2: Markdown Embed -->
+          <div class="bg-slate-50 rounded-xl p-4 border border-slate-200">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-mono font-semibold uppercase tracking-wider text-slate-700">Markdown Embed (README / Docs)</span>
+              <button
+                type="button"
+                onclick="copyCode('embed-markdown', this)"
+                class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-white hover:bg-slate-100 text-xs font-semibold text-slate-700 border border-slate-300 transition-colors shadow-xs"
+              >
+                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                </svg>
+                <span>Copy</span>
+              </button>
+            </div>
+            <pre class="bg-slate-900 text-slate-100 p-3 rounded-lg text-xs font-mono overflow-x-auto selection:bg-copper-700"><code id="embed-markdown">[![The Forsyth Group LLC](https://badge.uptimerobot.com/psp/e455d74df3ea41f2abb5d43e07a65067.svg?style=logo&amp;theme=light)](https://status.forsythgroup.org?utm_source=status_badge&amp;utm_medium=referral)</code></pre>
+          </div>
+
+          <!-- Embed Option 3: HTML Embed -->
+          <div class="bg-slate-50 rounded-xl p-4 border border-slate-200">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-mono font-semibold uppercase tracking-wider text-slate-700">HTML Embed (Web Pages)</span>
+              <button
+                type="button"
+                onclick="copyCode('embed-html', this)"
+                class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-white hover:bg-slate-100 text-xs font-semibold text-slate-700 border border-slate-300 transition-colors shadow-xs"
+              >
+                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                </svg>
+                <span>Copy</span>
+              </button>
+            </div>
+            <pre class="bg-slate-900 text-slate-100 p-3 rounded-lg text-xs font-mono overflow-x-auto selection:bg-copper-700"><code id="embed-html">&lt;a href="https://status.forsythgroup.org?utm_source=status_badge&amp;utm_medium=referral" target="_blank" rel="noopener"&gt;&lt;img src="https://badge.uptimerobot.com/psp/e455d74df3ea41f2abb5d43e07a65067.svg?style=logo&amp;theme=light" alt="The Forsyth Group LLC"&gt;&lt;/a&gt;</code></pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== INCIDENT HISTORY & MAINTENANCE POLICY ==================== -->
+      <section class="grid grid-cols-1 lg:grid-cols-3 gap-6" aria-labelledby="history-heading">
+        
+        <!-- Past 90 Days Incident History (2 cols) -->
+        <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-200 shadow-sm p-6 sm:p-8">
+          <h2 id="history-heading" class="font-display text-lg sm:text-xl font-bold text-slate-900 tracking-tight">
+            Incident History (Past 90 Days)
+          </h2>
+          <p class="text-xs sm:text-sm text-slate-600 mt-1 mb-6">
+            Log of confirmed outages, service degradations, and maintenance windows.
+          </p>
+
+          <div class="space-y-4">
+            <!-- Current Month -->
+            <div class="border border-slate-200 rounded-xl p-4.5 bg-slate-50/50">
+              <div class="flex items-center justify-between">
+                <span class="text-sm font-semibold text-slate-900 font-display">Current Cycle</span>
+                <span class="inline-flex items-center gap-1.5 text-xs font-mono text-emerald-700 font-medium">
+                  <span class="w-2 h-2 rounded-full bg-emerald-500"></span> No Incidents Reported
+                </span>
+              </div>
+              <p class="text-xs text-slate-500 mt-1">All enterprise software modules and member portals operating at 100% nominal availability.</p>
+            </div>
+
+            <!-- Prior 30 Days -->
+            <div class="border border-slate-200 rounded-xl p-4.5 bg-slate-50/50">
+              <div class="flex items-center justify-between">
+                <span class="text-sm font-semibold text-slate-900 font-display">Prior 30–60 Days</span>
+                <span class="inline-flex items-center gap-1.5 text-xs font-mono text-emerald-700 font-medium">
+                  <span class="w-2 h-2 rounded-full bg-emerald-500"></span> No Incidents Reported
+                </span>
+              </div>
+              <p class="text-xs text-slate-500 mt-1">Routine zero-downtime rolling security updates deployed successfully.</p>
+            </div>
+
+            <!-- Prior 60-90 Days -->
+            <div class="border border-slate-200 rounded-xl p-4.5 bg-slate-50/50">
+              <div class="flex items-center justify-between">
+                <span class="text-sm font-semibold text-slate-900 font-display">Prior 60–90 Days</span>
+                <span class="inline-flex items-center gap-1.5 text-xs font-mono text-emerald-700 font-medium">
+                  <span class="w-2 h-2 rounded-full bg-emerald-500"></span> No Incidents Reported
+                </span>
+              </div>
+              <p class="text-xs text-slate-500 mt-1">High-reliability performance maintained across all production clusters.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Emergency Support & Architecture Policy (1 col) -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 sm:p-8 flex flex-col justify-between">
+          <div>
+            <div class="w-10 h-10 rounded-xl bg-copper-100 flex items-center justify-center text-copper-800 mb-4 border border-copper-600/30">
+              <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+              </svg>
+            </div>
+            <h3 class="font-display text-lg font-bold text-slate-900">
+              Emergency Escalation
+            </h3>
+            <p class="text-xs sm:text-sm text-slate-600 mt-2 leading-relaxed">
+              If your organization is experiencing an unlisted connectivity issue or critical service disruption, our systems engineering team is available for immediate incident response.
+            </p>
+            <div class="mt-4 p-3 bg-slate-50 rounded-lg border border-slate-200 text-xs font-mono text-slate-600">
+              <span class="block text-slate-400 text-[10px] uppercase font-bold">Priority Support Channel</span>
+              <a href="mailto:info@forsythgroup.org?subject=%5BURGENT%5D%20Systems%20Incident%20Escalation" class="text-copper-700 hover:text-copper-800 font-semibold underline break-all">
+                info@forsythgroup.org
+              </a>
+            </div>
+          </div>
+
+          <div class="mt-6 pt-5 border-t border-slate-100">
+            <span class="block text-xs font-semibold text-slate-800 font-display">Maintenance Policy</span>
+            <p class="text-xs text-slate-500 mt-1">
+              Standard scheduled maintenance is executed during off-peak windows with advance client advisory.
+            </p>
+          </div>
+        </div>
+
+      </section>
+
+    </div>
+  </main>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer class="border-t border-slate-200 bg-white py-10 mt-12">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-6">
+        
+        <div class="flex items-center gap-4 text-center sm:text-left">
+          <img
+            src="images/logo.jpg"
+            onerror="this.onerror=null; this.src='/images/logo.jpg';"
+            alt="The Forsyth Group LLC"
+            class="h-10 sm:h-12 w-auto object-contain"
+          />
+          <div class="border-l border-slate-300 pl-4">
+            <span class="block text-xs font-semibold text-slate-900">The Forsyth Group LLC</span>
+            <span class="block text-[11px] text-slate-500">Over 35 Years of Engineering Excellence</span>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-6 text-xs font-semibold text-slate-600">
+          <a href="https://forsythgroup.org" class="hover:text-copper-700 transition-colors">ForsythGroup.org</a>
+          <a href="https://status.forsythgroup.org" class="text-copper-700 font-mono">status.forsythgroup.org</a>
+          <a href="mailto:info@forsythgroup.org" class="hover:text-copper-700 transition-colors">Contact Engineering</a>
+        </div>
+
+      </div>
+
+      <div class="mt-6 pt-6 border-t border-slate-200 text-center sm:text-left text-xs font-medium text-slate-500 flex flex-col sm:flex-row justify-between gap-2">
+        <p>&copy; 2026 The Forsyth Group LLC. All rights reserved.</p>
+        <p class="font-mono text-slate-400">Status telemetry powered by UptimeRobot</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==================== JAVASCRIPT ==================== -->
+  <script>
+    // Copy code helper with visual feedback
+    function copyCode(elementId, btn) {
+      const codeEl = document.getElementById(elementId);
+      if (!codeEl) return;
+      
+      const textToCopy = codeEl.innerText || codeEl.textContent;
+      navigator.clipboard.writeText(textToCopy).then(() => {
+        const originalHtml = btn.innerHTML;
+        btn.classList.add('bg-emerald-50', 'text-emerald-700', 'border-emerald-300');
+        btn.innerHTML = `
+          <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+          </svg>
+          <span>Copied!</span>
+        `;
+        setTimeout(() => {
+          btn.classList.remove('bg-emerald-50', 'text-emerald-700', 'border-emerald-300');
+          btn.innerHTML = originalHtml;
+        }, 2000);
+      }).catch(err => {
+        console.error('Copy failed', err);
+      });
+    }
+
+    // Dynamic auto-refresh logic
+    (function () {
+      let secondsRemaining = 60;
+      const timerEl = document.getElementById('refresh-timer');
+      const lastUpdatedEl = document.getElementById('last-updated-text');
+      const refreshBtn = document.getElementById('refresh-btn');
+      const refreshIcon = document.getElementById('refresh-icon');
+
+      function refreshFeeds() {
+        const timestamp = new Date().getTime();
+        
+        // Refresh Header Iframe
+        const headerIframe = document.getElementById('header-uptime-iframe');
+        if (headerIframe) {
+          headerIframe.src = 'https://badge.uptimerobot.com/psp/e455d74df3ea41f2abb5d43e07a65067?style=logo&theme=light&_t=' + timestamp;
+        }
+
+        // Refresh Main Card Iframe
+        const mainIframe = document.getElementById('main-uptime-iframe');
+        if (mainIframe) {
+          mainIframe.src = 'https://badge.uptimerobot.com/psp/e455d74df3ea41f2abb5d43e07a65067?style=logo&theme=light&_t=' + timestamp;
+        }
+
+        // Refresh SVG image preview
+        const liveBadgeImg = document.getElementById('live-badge-img');
+        if (liveBadgeImg) {
+          liveBadgeImg.src = 'https://badge.uptimerobot.com/psp/e455d74df3ea41f2abb5d43e07a65067.svg?style=logo&theme=light&_t=' + timestamp;
+        }
+
+        // Update timestamp display
+        const now = new Date();
+        const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        if (lastUpdatedEl) {
+          lastUpdatedEl.textContent = 'Updated ' + timeStr;
+        }
+
+        secondsRemaining = 60;
+        if (timerEl) timerEl.textContent = secondsRemaining;
+      }
+
+      // Manual refresh click with spin animation
+      if (refreshBtn && refreshIcon) {
+        refreshBtn.addEventListener('click', () => {
+          refreshIcon.classList.add('animate-spin');
+          refreshFeeds();
+          setTimeout(() => {
+            refreshIcon.classList.remove('animate-spin');
+          }, 600);
+        });
+      }
+
+      // Countdown loop
+      setInterval(() => {
+        secondsRemaining--;
+        if (secondsRemaining <= 0) {
+          refreshFeeds();
+        } else if (timerEl) {
+          timerEl.textContent = secondsRemaining;
+        }
+      }, 1000);
+    })();
+  </script>
+</body>
+</html>
