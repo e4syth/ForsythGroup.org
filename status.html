@@ -5,7 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>System Status | The Forsyth Group LLC</title>
   <meta name="description" content="Real-time operational status, system health, and service availability for The Forsyth Group LLC enterprise software platforms and infrastructure." />
-  <meta name="theme-color" content="#ffffff" />
+  <meta name="theme-color" content="#ffffff" id="meta-theme-color" />
+
+  <!-- Zero-flicker dark mode initialization -->
+  <script>
+    (function () {
+      const storedTheme = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (storedTheme === 'dark' || (!storedTheme && prefersDark)) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    })();
+  </script>
 
   <!-- Open Graph / Metadata -->
   <meta property="og:title" content="System Status | The Forsyth Group LLC" />
@@ -26,6 +39,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
+      darkMode: 'class',
       theme: {
         extend: {
           colors: {
@@ -45,6 +59,7 @@
               700: '#92400e',
               800: '#78350f',
               900: '#451a03',
+              950: '#2a0e02',
             }
           },
           fontFamily: {
@@ -62,6 +77,11 @@
       background-color: #f8fafc;
       color: #0f172a;
       overflow-x: hidden;
+      transition: background-color 0.25s ease, color 0.25s ease;
+    }
+    .dark body {
+      background-color: #080d1a;
+      color: #f1f5f9;
     }
 
     a:focus-visible,
@@ -76,6 +96,11 @@
       background-image:
         linear-gradient(to right, rgba(15, 23, 42, 0.035) 1px, transparent 1px),
         linear-gradient(to bottom, rgba(15, 23, 42, 0.035) 1px, transparent 1px);
+    }
+    .dark .bg-light-grid {
+      background-image:
+        linear-gradient(to right, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
     }
 
     .copper-rule {
@@ -92,7 +117,7 @@
     }
   </style>
 </head>
-<body class="bg-slate-50 text-slate-900 font-sans antialiased selection:bg-copper-700 selection:text-white">
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans antialiased selection:bg-copper-700 selection:text-white">
 
   <!-- WCAG 2.1 AA Skip Navigation Link -->
   <a
@@ -103,7 +128,7 @@
   </a>
 
   <!-- ==================== HEADER ==================== -->
-  <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-sm">
+  <header class="sticky top-0 z-50 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 shadow-sm transition-colors duration-200">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between h-20 sm:h-24">
         
@@ -114,37 +139,58 @@
               src="images/logo.jpg"
               onerror="this.onerror=null; this.src='/images/logo.jpg';"
               alt="The Forsyth Group LLC"
-              class="h-12 sm:h-16 w-auto object-contain"
+              class="h-12 sm:h-16 w-auto object-contain bg-white rounded-lg p-1 shadow-2xs"
             />
           </a>
-          <div class="border-l border-slate-300 pl-4 sm:pl-6 hidden xs:block">
+          <div class="border-l border-slate-300 dark:border-slate-700 pl-4 sm:pl-6 hidden xs:block">
             <div class="flex items-center gap-2">
-              <span class="font-display font-bold text-slate-900 text-base sm:text-lg tracking-tight">System Status</span>
-              <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-mono font-medium bg-emerald-50 text-emerald-800 border border-emerald-200">
+              <span class="font-display font-bold text-slate-900 dark:text-white text-base sm:text-lg tracking-tight">System Status</span>
+              <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-mono font-medium bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 status-pulse"></span>
                 <span>Live</span>
               </span>
             </div>
-            <span class="block text-xs text-slate-500 font-medium font-mono">status.forsythgroup.org</span>
+            <span class="block text-xs text-slate-500 dark:text-slate-400 font-medium font-mono">status.forsythgroup.org</span>
           </div>
         </div>
 
-        <!-- Header Live Badge + Main Website Link -->
-        <div class="flex items-center gap-3 sm:gap-5">
-          <div class="hidden lg:flex items-center h-6 overflow-hidden rounded border border-slate-200 shadow-xs" title="Live status feed via UptimeRobot">
+        <!-- Header Actions: Light/Dark Switch, Live Badge, Main Website Link -->
+        <div class="flex items-center gap-2.5 sm:gap-4">
+          
+          <!-- Live UptimeRobot website embed iframe (Header compact) -->
+          <div class="hidden lg:flex items-center h-6 overflow-hidden rounded border border-slate-200 dark:border-slate-700 shadow-2xs bg-white dark:bg-slate-800" title="Live status feed via UptimeRobot">
             <iframe
               id="header-uptime-iframe"
               src="https://badge.uptimerobot.com/psp/e455d74df3ea41f2abb5d43e07a65067?style=logo&theme=light"
               title="The Forsyth Group LLC"
               width="181"
               height="24"
-              style="border:0;color-scheme:light;overflow:hidden;"
+              style="border:0;overflow:hidden;"
             ></iframe>
           </div>
 
+          <!-- Light / Dark Mode Toggle Button -->
+          <button
+            id="theme-toggle-btn"
+            type="button"
+            class="inline-flex items-center justify-center p-2 rounded-lg text-slate-600 dark:text-slate-300 hover:text-copper-700 dark:hover:text-copper-400 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 transition-colors shadow-2xs"
+            aria-label="Toggle light and dark color themes"
+            title="Toggle theme (Light / Dark)"
+          >
+            <!-- Sun Icon (shown in dark mode) -->
+            <svg id="theme-sun-icon" class="w-4 h-4 hidden dark:block text-copper-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
+            </svg>
+            <!-- Moon Icon (shown in light mode) -->
+            <svg id="theme-moon-icon" class="w-4 h-4 block dark:hidden text-slate-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
+            </svg>
+          </button>
+
+          <!-- Back to ForsythGroup.org -->
           <a
             href="https://forsythgroup.org"
-            class="inline-flex items-center gap-2 px-3.5 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold text-slate-700 hover:text-copper-700 bg-slate-100 hover:bg-slate-200/80 transition-colors border border-slate-200"
+            class="inline-flex items-center gap-2 px-3.5 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-200 hover:text-copper-700 dark:hover:text-copper-400 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors border border-slate-200 dark:border-slate-700"
           >
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
               <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
@@ -162,33 +208,33 @@
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 sm:space-y-10">
 
       <!-- ==================== HERO / LIVE STATUS OVERVIEW CARD ==================== -->
-      <section class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden" aria-labelledby="status-overview-heading">
+      <section class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden transition-colors duration-200" aria-labelledby="status-overview-heading">
         <div class="p-6 sm:p-8 lg:p-10">
-          <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pb-6 border-b border-slate-100">
+          <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pb-6 border-b border-slate-100 dark:border-slate-800">
             <div>
-              <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-copper-100 border border-copper-600/20 mb-3.5">
-                <span class="w-2 h-2 rounded-full bg-copper-700"></span>
-                <span class="text-xs font-mono font-semibold uppercase tracking-wider text-copper-800">
+              <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-copper-100 dark:bg-copper-950/60 border border-copper-600/20 dark:border-copper-500/30 mb-3.5">
+                <span class="w-2 h-2 rounded-full bg-copper-700 dark:bg-copper-400"></span>
+                <span class="text-xs font-mono font-semibold uppercase tracking-wider text-copper-800 dark:text-copper-300">
                   Infrastructure Health &amp; Availability
                 </span>
               </div>
-              <h1 id="status-overview-heading" class="font-display text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight">
+              <h1 id="status-overview-heading" class="font-display text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
                 Service Status &amp; Availability
               </h1>
-              <p class="mt-2 text-sm sm:text-base text-slate-600 max-w-2xl">
+              <p class="mt-2 text-sm sm:text-base text-slate-600 dark:text-slate-400 max-w-2xl">
                 Real-time operational status and synthetic health telemetry directly connected to UpTimeRobot monitors.
               </p>
             </div>
 
             <!-- Auto-Refresh & Last Checked Controls -->
             <div class="flex flex-col sm:flex-row lg:flex-col items-start lg:items-end gap-3 shrink-0">
-              <div class="flex items-center gap-2 bg-slate-50 border border-slate-200 px-3.5 py-2 rounded-lg text-xs font-mono text-slate-600">
+              <div class="flex items-center gap-2 bg-slate-50 dark:bg-slate-850 border border-slate-200 dark:border-slate-700 px-3.5 py-2 rounded-lg text-xs font-mono text-slate-600 dark:text-slate-300">
                 <span id="overall-status-dot" class="w-2 h-2 rounded-full bg-emerald-500 status-pulse" aria-hidden="true"></span>
                 <span id="last-updated-text">Checked just now</span>
                 <button
                   id="refresh-btn"
                   type="button"
-                  class="ml-2 p-1 text-slate-500 hover:text-copper-700 transition-colors rounded hover:bg-slate-200/60"
+                  class="ml-2 p-1 text-slate-500 dark:text-slate-400 hover:text-copper-700 dark:hover:text-copper-400 transition-colors rounded hover:bg-slate-200/60 dark:hover:bg-slate-750"
                   title="Refresh monitors now"
                   aria-label="Refresh monitors now"
                 >
@@ -197,36 +243,36 @@
                   </svg>
                 </button>
               </div>
-              <span class="text-[11px] text-slate-500 font-mono">
-                Auto-refreshes in <span id="refresh-timer" class="font-semibold text-slate-700">60</span>s
+              <span class="text-[11px] text-slate-500 dark:text-slate-400 font-mono">
+                Auto-refreshes in <span id="refresh-timer" class="font-semibold text-slate-700 dark:text-slate-200">60</span>s
               </span>
             </div>
           </div>
 
           <!-- UptimeRobot Live Embed Display Bar -->
           <div class="pt-6">
-            <div class="bg-slate-50 rounded-xl p-4 sm:p-5 border border-slate-200/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div class="bg-slate-50 dark:bg-slate-850/80 rounded-xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div class="flex items-center gap-3">
-                <div class="p-2 bg-white rounded-lg border border-slate-200 shadow-xs">
-                  <svg class="w-5 h-5 text-copper-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <div class="p-2 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 shadow-2xs">
+                  <svg class="w-5 h-5 text-copper-700 dark:text-copper-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
                   </svg>
                 </div>
                 <div>
-                  <span class="block text-xs font-mono uppercase tracking-wider text-slate-500 font-semibold">Live Telemetry Feed</span>
-                  <span class="block text-sm font-semibold text-slate-900">UpTimeRobot Public Status Badge</span>
+                  <span class="block text-xs font-mono uppercase tracking-wider text-slate-500 dark:text-slate-400 font-semibold">Live Telemetry Feed</span>
+                  <span class="block text-sm font-semibold text-slate-900 dark:text-white">UpTimeRobot Public Status Badge</span>
                 </div>
               </div>
 
               <!-- Website embed iframe -->
-              <div class="flex items-center gap-3 bg-white px-3.5 py-2 rounded-lg border border-slate-200 shadow-xs">
+              <div class="flex items-center gap-3 bg-white dark:bg-slate-800 px-3.5 py-2 rounded-lg border border-slate-200 dark:border-slate-700 shadow-2xs">
                 <iframe
                   id="main-uptime-iframe"
                   src="https://badge.uptimerobot.com/psp/e455d74df3ea41f2abb5d43e07a65067?style=logo&theme=light"
                   title="The Forsyth Group LLC"
                   width="181"
                   height="24"
-                  style="border:0;color-scheme:light;display:block;"
+                  style="border:0;display:block;"
                 ></iframe>
               </div>
             </div>
@@ -234,7 +280,7 @@
         </div>
 
         <!-- Metric highlights strip -->
-        <div class="bg-slate-900 text-white px-6 sm:px-8 py-5 border-t border-slate-800 grid grid-cols-2 md:grid-cols-4 gap-6">
+        <div class="bg-slate-900 dark:bg-slate-950 text-white px-6 sm:px-8 py-5 border-t border-slate-800 dark:border-slate-800/80 grid grid-cols-2 md:grid-cols-4 gap-6">
           <div>
             <span class="block text-xs font-mono uppercase tracking-wider text-slate-400">Monitored Systems</span>
             <span id="metric-monitors" class="block text-xl sm:text-2xl font-bold font-display text-white mt-0.5">3 Active</span>
@@ -258,14 +304,14 @@
       <section class="space-y-6" aria-labelledby="monitors-heading">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>
-            <h2 id="monitors-heading" class="font-display text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
+            <h2 id="monitors-heading" class="font-display text-xl sm:text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
               Monitored Enterprise Systems
             </h2>
-            <p class="text-sm text-slate-600 mt-0.5">
+            <p class="text-sm text-slate-600 dark:text-slate-400 mt-0.5">
               Live monitors grouped according to your UpTimeRobot configuration.
             </p>
           </div>
-          <span class="inline-flex items-center gap-1.5 text-xs font-mono text-slate-500">
+          <span class="inline-flex items-center gap-1.5 text-xs font-mono text-slate-500 dark:text-slate-400">
             <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Live sync with UpTimeRobot
           </span>
         </div>
@@ -274,23 +320,23 @@
         <div id="monitors-container" class="space-y-8">
           
           <!-- Group: InvoiceCamp -->
-          <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden" data-group="InvoiceCamp">
+          <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden transition-colors duration-200" data-group="InvoiceCamp">
             
             <!-- Group Header Bar -->
-            <div class="bg-slate-100/80 px-6 py-4 border-b border-slate-200 flex items-center justify-between">
+            <div class="bg-slate-100/80 dark:bg-slate-850 px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
               <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-lg bg-copper-100 flex items-center justify-center text-copper-800 border border-copper-600/30">
+                <div class="w-8 h-8 rounded-lg bg-copper-100 dark:bg-copper-950/60 flex items-center justify-center text-copper-800 dark:text-copper-300 border border-copper-600/30 dark:border-copper-500/30">
                   <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6H2.25m0 0H3m-1.5 0h.008v.008H1.5V6zm0 0h.008v.008H1.5V6zm1.5 0h.008v.008H3V6zm0 0h.008v.008H3V6zm0 0h.008v.008H3V6zm18 0h.008v.008H21V6zm0 0h.008v.008H21V6zm0 0h.008v.008H21V6zM3.75 12h16.5m-16.5 3.75h16.5" />
                   </svg>
                 </div>
                 <div>
-                  <h3 class="font-display font-bold text-base text-slate-900">InvoiceCamp</h3>
-                  <span class="block text-xs font-mono text-slate-500">Application Suite &amp; Infrastructure</span>
+                  <h3 class="font-display font-bold text-base text-slate-900 dark:text-white">InvoiceCamp</h3>
+                  <span class="block text-xs font-mono text-slate-500 dark:text-slate-400">Application Suite &amp; Infrastructure</span>
                 </div>
               </div>
               <div class="flex items-center gap-2">
-                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
                   <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
                   <span>Operational</span>
                 </span>
@@ -298,108 +344,108 @@
             </div>
 
             <!-- Monitors in Group -->
-            <div class="divide-y divide-slate-100">
+            <div class="divide-y divide-slate-100 dark:divide-slate-800">
               
               <!-- Monitor 1: Web App & Portal -->
-              <div class="p-5 sm:p-6 hover:bg-slate-50/60 transition-colors" data-monitor-id="804581519">
+              <div class="p-5 sm:p-6 hover:bg-slate-50/60 dark:hover:bg-slate-850/40 transition-colors" data-monitor-id="804581519">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <div class="space-y-1">
                     <div class="flex items-center gap-2.5 flex-wrap">
-                      <span class="font-semibold text-slate-900 text-base">Web App &amp; Portal</span>
-                      <span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-mono font-medium bg-slate-100 text-slate-700 border border-slate-200">
+                      <span class="font-semibold text-slate-900 dark:text-white text-base">Web App &amp; Portal</span>
+                      <span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-mono font-medium bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
                         HTTP(s)
                       </span>
-                      <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
+                      <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
                         Operational
                       </span>
                     </div>
-                    <p class="text-xs sm:text-sm text-slate-500">
+                    <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
                       Primary web client interface, customer management dashboards, and user sessions.
                     </p>
                   </div>
                   <div class="text-left sm:text-right shrink-0">
-                    <span class="block text-xs font-mono font-semibold text-slate-800">Uptime: 100.0%</span>
-                    <span class="block text-[11px] font-mono text-emerald-600 font-medium">Status: Up</span>
+                    <span class="block text-xs font-mono font-semibold text-slate-800 dark:text-slate-200">Uptime: 100.0%</span>
+                    <span class="block text-[11px] font-mono text-emerald-600 dark:text-emerald-400 font-medium">Status: Up</span>
                   </div>
                 </div>
-                <div class="mt-4 pt-3 border-t border-slate-100">
-                  <div class="flex items-center justify-between text-[11px] font-mono text-slate-400 mb-1.5">
+                <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800">
+                  <div class="flex items-center justify-between text-[11px] font-mono text-slate-400 dark:text-slate-500 mb-1.5">
                     <span>90 days ago</span>
-                    <span class="text-emerald-700 font-semibold">100% Uptime (Today)</span>
+                    <span class="text-emerald-700 dark:text-emerald-400 font-semibold">100% Uptime (Today)</span>
                   </div>
                   <div class="grid grid-cols-45 sm:grid-cols-90 gap-0.5 sm:gap-1 h-3" aria-hidden="true" title="90-day uptime history">
                     <script>
-                      document.write(Array(44).fill('<div class="bg-slate-200 rounded-[1px]" title="No historical data"></div>').join('') + '<div class="bg-emerald-500 rounded-[1px]" title="Today: 100% Operational"></div>');
+                      document.write(Array(44).fill('<div class="bg-slate-200 dark:bg-slate-800 rounded-[1px]" title="No historical data"></div>').join('') + '<div class="bg-emerald-500 rounded-[1px]" title="Today: 100% Operational"></div>');
                     </script>
                   </div>
                 </div>
               </div>
 
               <!-- Monitor 2: Database -->
-              <div class="p-5 sm:p-6 hover:bg-slate-50/60 transition-colors" data-monitor-id="804581444">
+              <div class="p-5 sm:p-6 hover:bg-slate-50/60 dark:hover:bg-slate-850/40 transition-colors" data-monitor-id="804581444">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <div class="space-y-1">
                     <div class="flex items-center gap-2.5 flex-wrap">
-                      <span class="font-semibold text-slate-900 text-base">Database</span>
-                      <span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-mono font-medium bg-slate-100 text-slate-700 border border-slate-200">
+                      <span class="font-semibold text-slate-900 dark:text-white text-base">Database</span>
+                      <span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-mono font-medium bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
                         Keyword
                       </span>
-                      <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
+                      <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
                         Operational
                       </span>
                     </div>
-                    <p class="text-xs sm:text-sm text-slate-500">
+                    <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
                       Primary relational cluster, transaction integrity checks, and data store health.
                     </p>
                   </div>
                   <div class="text-left sm:text-right shrink-0">
-                    <span class="block text-xs font-mono font-semibold text-slate-800">Uptime: 98.09%</span>
-                    <span class="block text-[11px] font-mono text-emerald-600 font-medium">Status: Up</span>
+                    <span class="block text-xs font-mono font-semibold text-slate-800 dark:text-slate-200">Uptime: 98.09%</span>
+                    <span class="block text-[11px] font-mono text-emerald-600 dark:text-emerald-400 font-medium">Status: Up</span>
                   </div>
                 </div>
-                <div class="mt-4 pt-3 border-t border-slate-100">
-                  <div class="flex items-center justify-between text-[11px] font-mono text-slate-400 mb-1.5">
+                <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800">
+                  <div class="flex items-center justify-between text-[11px] font-mono text-slate-400 dark:text-slate-500 mb-1.5">
                     <span>90 days ago</span>
-                    <span class="text-emerald-700 font-semibold">98.09% (Today)</span>
+                    <span class="text-emerald-700 dark:text-emerald-400 font-semibold">98.09% (Today)</span>
                   </div>
                   <div class="grid grid-cols-45 sm:grid-cols-90 gap-0.5 sm:gap-1 h-3" aria-hidden="true" title="90-day uptime history">
                     <script>
-                      document.write(Array(44).fill('<div class="bg-slate-200 rounded-[1px]" title="No historical data"></div>').join('') + '<div class="bg-emerald-500 rounded-[1px]" title="Today: Operational"></div>');
+                      document.write(Array(44).fill('<div class="bg-slate-200 dark:bg-slate-800 rounded-[1px]" title="No historical data"></div>').join('') + '<div class="bg-emerald-500 rounded-[1px]" title="Today: Operational"></div>');
                     </script>
                   </div>
                 </div>
               </div>
 
               <!-- Monitor 3: Payment API -->
-              <div class="p-5 sm:p-6 hover:bg-slate-50/60 transition-colors" data-monitor-id="804581510">
+              <div class="p-5 sm:p-6 hover:bg-slate-50/60 dark:hover:bg-slate-850/40 transition-colors" data-monitor-id="804581510">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <div class="space-y-1">
                     <div class="flex items-center gap-2.5 flex-wrap">
-                      <span class="font-semibold text-slate-900 text-base">Payment API</span>
-                      <span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-mono font-medium bg-slate-100 text-slate-700 border border-slate-200">
+                      <span class="font-semibold text-slate-900 dark:text-white text-base">Payment API</span>
+                      <span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-mono font-medium bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
                         Keyword
                       </span>
-                      <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
+                      <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
                         Operational
                       </span>
                     </div>
-                    <p class="text-xs sm:text-sm text-slate-500">
+                    <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
                       Invoice payment gateways, card merchant handshakes, and webhook fulfillment endpoints.
                     </p>
                   </div>
                   <div class="text-left sm:text-right shrink-0">
-                    <span class="block text-xs font-mono font-semibold text-slate-800">Uptime: 69.43%</span>
-                    <span class="block text-[11px] font-mono text-emerald-600 font-medium">Status: Up</span>
+                    <span class="block text-xs font-mono font-semibold text-slate-800 dark:text-slate-200">Uptime: 69.43%</span>
+                    <span class="block text-[11px] font-mono text-emerald-600 dark:text-emerald-400 font-medium">Status: Up</span>
                   </div>
                 </div>
-                <div class="mt-4 pt-3 border-t border-slate-100">
-                  <div class="flex items-center justify-between text-[11px] font-mono text-slate-400 mb-1.5">
+                <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800">
+                  <div class="flex items-center justify-between text-[11px] font-mono text-slate-400 dark:text-slate-500 mb-1.5">
                     <span>90 days ago</span>
-                    <span class="text-slate-700 font-semibold">Live Monitor</span>
+                    <span class="text-slate-700 dark:text-slate-300 font-semibold">Live Monitor</span>
                   </div>
                   <div class="grid grid-cols-45 sm:grid-cols-90 gap-0.5 sm:gap-1 h-3" aria-hidden="true" title="90-day uptime history">
                     <script>
-                      document.write(Array(44).fill('<div class="bg-slate-200 rounded-[1px]" title="No historical data"></div>').join('') + '<div class="bg-amber-500 rounded-[1px]" title="Today: Monitored"></div>');
+                      document.write(Array(44).fill('<div class="bg-slate-200 dark:bg-slate-800 rounded-[1px]" title="No historical data"></div>').join('') + '<div class="bg-amber-500 rounded-[1px]" title="Today: Monitored"></div>');
                     </script>
                   </div>
                 </div>
@@ -415,75 +461,75 @@
       <section class="grid grid-cols-1 lg:grid-cols-3 gap-6" aria-labelledby="history-heading">
         
         <!-- Past 90 Days Incident History (2 cols) -->
-        <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-200 shadow-sm p-6 sm:p-8">
-          <h2 id="history-heading" class="font-display text-lg sm:text-xl font-bold text-slate-900 tracking-tight">
+        <div class="lg:col-span-2 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm p-6 sm:p-8 transition-colors duration-200">
+          <h2 id="history-heading" class="font-display text-lg sm:text-xl font-bold text-slate-900 dark:text-white tracking-tight">
             Incident History (Past 90 Days)
           </h2>
-          <p class="text-xs sm:text-sm text-slate-600 mt-1 mb-6">
+          <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1 mb-6">
             Log of confirmed outages, service degradations, and maintenance windows.
           </p>
 
           <div class="space-y-4">
             <!-- Current Period -->
-            <div class="border border-slate-200 rounded-xl p-4.5 bg-slate-50/50">
+            <div class="border border-slate-200 dark:border-slate-800 rounded-xl p-4.5 bg-slate-50/50 dark:bg-slate-850/50">
               <div class="flex items-center justify-between">
-                <span class="text-sm font-semibold text-slate-900 font-display">Current Cycle</span>
-                <span class="inline-flex items-center gap-1.5 text-xs font-mono text-emerald-700 font-medium">
+                <span class="text-sm font-semibold text-slate-900 dark:text-white font-display">Current Cycle</span>
+                <span class="inline-flex items-center gap-1.5 text-xs font-mono text-emerald-700 dark:text-emerald-400 font-medium">
                   <span class="w-2 h-2 rounded-full bg-emerald-500"></span> UpTimeRobot Telemetry Active
                 </span>
               </div>
-              <p class="text-xs text-slate-500 mt-1">Synthetic heartbeat active across all InvoiceCamp monitors.</p>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Synthetic heartbeat active across all InvoiceCamp monitors.</p>
             </div>
 
             <!-- Prior 30 Days -->
-            <div class="border border-slate-200 rounded-xl p-4.5 bg-slate-50/50">
+            <div class="border border-slate-200 dark:border-slate-800 rounded-xl p-4.5 bg-slate-50/50 dark:bg-slate-850/50">
               <div class="flex items-center justify-between">
-                <span class="text-sm font-semibold text-slate-900 font-display">Prior 30–60 Days</span>
-                <span class="inline-flex items-center gap-1.5 text-xs font-mono text-emerald-700 font-medium">
+                <span class="text-sm font-semibold text-slate-900 dark:text-white font-display">Prior 30–60 Days</span>
+                <span class="inline-flex items-center gap-1.5 text-xs font-mono text-emerald-700 dark:text-emerald-400 font-medium">
                   <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Nominal Operations
                 </span>
               </div>
-              <p class="text-xs text-slate-500 mt-1">Zero-downtime cluster maintenance executed normally.</p>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Zero-downtime cluster maintenance executed normally.</p>
             </div>
 
             <!-- Prior 60-90 Days -->
-            <div class="border border-slate-200 rounded-xl p-4.5 bg-slate-50/50">
+            <div class="border border-slate-200 dark:border-slate-800 rounded-xl p-4.5 bg-slate-50/50 dark:bg-slate-850/50">
               <div class="flex items-center justify-between">
-                <span class="text-sm font-semibold text-slate-900 font-display">Prior 60–90 Days</span>
-                <span class="inline-flex items-center gap-1.5 text-xs font-mono text-emerald-700 font-medium">
+                <span class="text-sm font-semibold text-slate-900 dark:text-white font-display">Prior 60–90 Days</span>
+                <span class="inline-flex items-center gap-1.5 text-xs font-mono text-emerald-700 dark:text-emerald-400 font-medium">
                   <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Nominal Operations
                 </span>
               </div>
-              <p class="text-xs text-slate-500 mt-1">High-reliability performance maintained across all production endpoints.</p>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">High-reliability performance maintained across all production endpoints.</p>
             </div>
           </div>
         </div>
 
         <!-- Emergency Support Channel (1 col) -->
-        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 sm:p-8 flex flex-col justify-between">
+        <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm p-6 sm:p-8 flex flex-col justify-between transition-colors duration-200">
           <div>
-            <div class="w-10 h-10 rounded-xl bg-copper-100 flex items-center justify-center text-copper-800 mb-4 border border-copper-600/30">
+            <div class="w-10 h-10 rounded-xl bg-copper-100 dark:bg-copper-950/60 flex items-center justify-center text-copper-800 dark:text-copper-300 mb-4 border border-copper-600/30 dark:border-copper-500/30">
               <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
               </svg>
             </div>
-            <h3 class="font-display text-lg font-bold text-slate-900">
+            <h3 class="font-display text-lg font-bold text-slate-900 dark:text-white">
               Emergency Escalation
             </h3>
-            <p class="text-xs sm:text-sm text-slate-600 mt-2 leading-relaxed">
+            <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-2 leading-relaxed">
               If your organization is experiencing an unexpected connectivity issue with an InvoiceCamp platform, contact our systems engineering team directly.
             </p>
-            <div class="mt-4 p-3 bg-slate-50 rounded-lg border border-slate-200 text-xs font-mono text-slate-600">
-              <span class="block text-slate-400 text-[10px] uppercase font-bold">Priority Support Channel</span>
-              <a href="mailto:info@forsythgroup.org?subject=%5BURGENT%5D%20Systems%20Incident%20Escalation" class="text-copper-700 hover:text-copper-800 font-semibold underline break-all">
+            <div class="mt-4 p-3 bg-slate-50 dark:bg-slate-850 rounded-lg border border-slate-200 dark:border-slate-700 text-xs font-mono text-slate-600 dark:text-slate-300">
+              <span class="block text-slate-400 dark:text-slate-500 text-[10px] uppercase font-bold">Priority Support Channel</span>
+              <a href="mailto:info@forsythgroup.org?subject=%5BURGENT%5D%20Systems%20Incident%20Escalation" class="text-copper-700 dark:text-copper-400 hover:text-copper-800 dark:hover:text-copper-300 font-semibold underline break-all">
                 info@forsythgroup.org
               </a>
             </div>
           </div>
 
-          <div class="mt-6 pt-5 border-t border-slate-100">
-            <span class="block text-xs font-semibold text-slate-800 font-display">Maintenance Policy</span>
-            <p class="text-xs text-slate-500 mt-1">
+          <div class="mt-6 pt-5 border-t border-slate-100 dark:border-slate-800">
+            <span class="block text-xs font-semibold text-slate-800 dark:text-slate-200 font-display">Maintenance Policy</span>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
               Standard maintenance is scheduled during off-peak windows with prior notification.
             </p>
           </div>
@@ -495,7 +541,7 @@
   </main>
 
   <!-- ==================== FOOTER ==================== -->
-  <footer class="border-t border-slate-200 bg-white py-10 mt-12">
+  <footer class="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 py-10 mt-12 transition-colors duration-200">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex flex-col sm:flex-row items-center justify-between gap-6">
         
@@ -504,30 +550,30 @@
             src="images/logo.jpg"
             onerror="this.onerror=null; this.src='/images/logo.jpg';"
             alt="The Forsyth Group LLC"
-            class="h-10 sm:h-12 w-auto object-contain"
+            class="h-10 sm:h-12 w-auto object-contain bg-white rounded-lg p-1 shadow-2xs"
           />
-          <div class="border-l border-slate-300 pl-4">
-            <span class="block text-xs font-semibold text-slate-900">The Forsyth Group LLC</span>
-            <span class="block text-[11px] text-slate-500">Over 35 Years of Engineering Excellence</span>
+          <div class="border-l border-slate-300 dark:border-slate-700 pl-4">
+            <span class="block text-xs font-semibold text-slate-900 dark:text-white">The Forsyth Group LLC</span>
+            <span class="block text-[11px] text-slate-500 dark:text-slate-400">Over 35 Years of Engineering Excellence</span>
           </div>
         </div>
 
-        <div class="flex items-center gap-6 text-xs font-semibold text-slate-600">
-          <a href="https://forsythgroup.org" class="hover:text-copper-700 transition-colors">ForsythGroup.org</a>
-          <a href="https://status.forsythgroup.org" class="text-copper-700 font-mono">status.forsythgroup.org</a>
-          <a href="mailto:info@forsythgroup.org" class="hover:text-copper-700 transition-colors">Contact Engineering</a>
+        <div class="flex items-center gap-6 text-xs font-semibold text-slate-600 dark:text-slate-400">
+          <a href="https://forsythgroup.org" class="hover:text-copper-700 dark:hover:text-copper-400 transition-colors">ForsythGroup.org</a>
+          <a href="https://status.forsythgroup.org" class="text-copper-700 dark:text-copper-400 font-mono">status.forsythgroup.org</a>
+          <a href="mailto:info@forsythgroup.org" class="hover:text-copper-700 dark:hover:text-copper-400 transition-colors">Contact Engineering</a>
         </div>
 
       </div>
 
-      <div class="mt-6 pt-6 border-t border-slate-200 text-center sm:text-left text-xs font-medium text-slate-500 flex flex-col sm:flex-row justify-between gap-2">
+      <div class="mt-6 pt-6 border-t border-slate-200 dark:border-slate-800 text-center sm:text-left text-xs font-medium text-slate-500 dark:text-slate-400 flex flex-col sm:flex-row justify-between gap-2">
         <p>&copy; 2026 The Forsyth Group LLC. All rights reserved.</p>
-        <p class="font-mono text-slate-400">Live telemetry powered by UpTimeRobot</p>
+        <p class="font-mono text-slate-400 dark:text-slate-500">Live telemetry powered by UpTimeRobot</p>
       </div>
     </div>
   </footer>
 
-  <!-- ==================== LIVE TELEMETRY SCRIPT ==================== -->
+  <!-- ==================== TELEMETRY & THEME SCRIPT ==================== -->
   <script>
     (function () {
       const PSP_API = 'https://stats.uptimerobot.com/api/getMonitorList/MbvN5V8aGo';
@@ -536,31 +582,63 @@
       const lastUpdatedEl = document.getElementById('last-updated-text');
       const refreshBtn = document.getElementById('refresh-btn');
       const refreshIcon = document.getElementById('refresh-icon');
+      const themeToggleBtn = document.getElementById('theme-toggle-btn');
+      const metaThemeColor = document.getElementById('meta-theme-color');
+
+      function updateIframeThemes(theme) {
+        const headerIframe = document.getElementById('header-uptime-iframe');
+        if (headerIframe) {
+          headerIframe.src = `https://badge.uptimerobot.com/psp/e455d74df3ea41f2abb5d43e07a65067?style=logo&theme=${theme}&_t=` + new Date().getTime();
+        }
+        const mainIframe = document.getElementById('main-uptime-iframe');
+        if (mainIframe) {
+          mainIframe.src = `https://badge.uptimerobot.com/psp/e455d74df3ea41f2abb5d43e07a65067?style=logo&theme=${theme}&_t=` + new Date().getTime();
+        }
+      }
+
+      function toggleTheme() {
+        const isDark = document.documentElement.classList.toggle('dark');
+        const theme = isDark ? 'dark' : 'light';
+        localStorage.setItem('theme', theme);
+        if (metaThemeColor) {
+          metaThemeColor.setAttribute('content', isDark ? '#080d1a' : '#ffffff');
+        }
+        updateIframeThemes(theme);
+      }
+
+      if (themeToggleBtn) {
+        themeToggleBtn.addEventListener('click', toggleTheme);
+      }
+
+      const initialTheme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+      if (initialTheme === 'dark') {
+        updateIframeThemes('dark');
+        if (metaThemeColor) metaThemeColor.setAttribute('content', '#080d1a');
+      }
 
       function colorClassFor(color) {
         if (color === 'green') return 'bg-emerald-500';
         if (color === 'blue') return 'bg-sky-500';
         if (color === 'red') return 'bg-rose-500';
         if (color === 'orange') return 'bg-amber-500';
-        return 'bg-slate-200';
+        return 'bg-slate-200 dark:bg-slate-800';
       }
 
       function badgeClassFor(statusClass) {
         if (statusClass === 'success') {
-          return '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">Operational</span>';
+          return '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">Operational</span>';
         } else if (statusClass === 'danger') {
-          return '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-rose-50 text-rose-700 border border-rose-200">Major Outage</span>';
+          return '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800">Major Outage</span>';
         } else if (statusClass === 'warning') {
-          return '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-amber-50 text-amber-700 border border-amber-200">Degraded / Partial</span>';
+          return '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800">Degraded / Partial</span>';
         } else {
-          return '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-700 border border-slate-200">Paused</span>';
+          return '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">Paused</span>';
         }
       }
 
       function renderLiveMonitors(monitorsData) {
         if (!monitorsData || !monitorsData.data || !monitorsData.data.length) return;
 
-        // Group by groupName
         const groups = {};
         monitorsData.data.forEach(m => {
           const gName = m.groupName || 'General Services';
@@ -575,30 +653,30 @@
         for (const [groupName, monitors] of Object.entries(groups)) {
           const hasDanger = monitors.some(m => m.statusClass === 'danger');
           const hasWarning = monitors.some(m => m.statusClass === 'warning');
-          let groupBadge = '<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span><span>Operational</span></span>';
+          let groupBadge = '<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span><span>Operational</span></span>';
           if (hasDanger) {
-            groupBadge = '<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-rose-50 text-rose-700 border border-rose-200"><span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span><span>Service Disruption</span></span>';
+            groupBadge = '<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800"><span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span><span>Service Disruption</span></span>';
           } else if (hasWarning) {
-            groupBadge = '<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-amber-50 text-amber-700 border border-amber-200"><span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span><span>Partial Degradation</span></span>';
+            groupBadge = '<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800"><span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span><span>Partial Degradation</span></span>';
           }
 
           html += `
-            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden" data-group="${groupName}">
-              <div class="bg-slate-100/80 px-6 py-4 border-b border-slate-200 flex items-center justify-between">
+            <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden transition-colors duration-200" data-group="${groupName}">
+              <div class="bg-slate-100/80 dark:bg-slate-850 px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
                 <div class="flex items-center gap-3">
-                  <div class="w-8 h-8 rounded-lg bg-copper-100 flex items-center justify-center text-copper-800 border border-copper-600/30">
+                  <div class="w-8 h-8 rounded-lg bg-copper-100 dark:bg-copper-950/60 flex items-center justify-center text-copper-800 dark:text-copper-300 border border-copper-600/30 dark:border-copper-500/30">
                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                       <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6H2.25m0 0H3m-1.5 0h.008v.008H1.5V6zm0 0h.008v.008H1.5V6zm1.5 0h.008v.008H3V6zm0 0h.008v.008H3V6zm0 0h.008v.008H3V6zm18 0h.008v.008H21V6zm0 0h.008v.008H21V6zm0 0h.008v.008H21V6zM3.75 12h16.5m-16.5 3.75h16.5" />
                     </svg>
                   </div>
                   <div>
-                    <h3 class="font-display font-bold text-base text-slate-900">${groupName}</h3>
-                    <span class="block text-xs font-mono text-slate-500">${monitors.length} Monitored Endpoint${monitors.length === 1 ? '' : 's'}</span>
+                    <h3 class="font-display font-bold text-base text-slate-900 dark:text-white">${groupName}</h3>
+                    <span class="block text-xs font-mono text-slate-500 dark:text-slate-400">${monitors.length} Monitored Endpoint${monitors.length === 1 ? '' : 's'}</span>
                   </div>
                 </div>
                 <div>${groupBadge}</div>
               </div>
-              <div class="divide-y divide-slate-100">
+              <div class="divide-y divide-slate-100 dark:divide-slate-800">
           `;
 
           monitors.forEach(m => {
@@ -618,26 +696,26 @@
             }
 
             html += `
-              <div class="p-5 sm:p-6 hover:bg-slate-50/60 transition-colors" data-monitor-id="${m.monitorId}">
+              <div class="p-5 sm:p-6 hover:bg-slate-50/60 dark:hover:bg-slate-850/40 transition-colors" data-monitor-id="${m.monitorId}">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <div class="space-y-1">
                     <div class="flex items-center gap-2.5 flex-wrap">
-                      <span class="font-semibold text-slate-900 text-base">${m.name}</span>
-                      <span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-mono font-medium bg-slate-100 text-slate-700 border border-slate-200">
+                      <span class="font-semibold text-slate-900 dark:text-white text-base">${m.name}</span>
+                      <span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-mono font-medium bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
                         ${m.type}
                       </span>
                       ${statusBadge}
                     </div>
                   </div>
                   <div class="text-left sm:text-right shrink-0">
-                    <span class="block text-xs font-mono font-semibold text-slate-800">Uptime: ${ratioVal}%</span>
-                    <span class="block text-[11px] font-mono text-emerald-600 font-medium">Status: Active</span>
+                    <span class="block text-xs font-mono font-semibold text-slate-800 dark:text-slate-200">Uptime: ${ratioVal}%</span>
+                    <span class="block text-[11px] font-mono text-emerald-600 dark:text-emerald-400 font-medium">Status: Active</span>
                   </div>
                 </div>
-                <div class="mt-4 pt-3 border-t border-slate-100">
-                  <div class="flex items-center justify-between text-[11px] font-mono text-slate-400 mb-1.5">
+                <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800">
+                  <div class="flex items-center justify-between text-[11px] font-mono text-slate-400 dark:text-slate-500 mb-1.5">
                     <span>90 days ago</span>
-                    <span class="text-slate-600 font-semibold">Today (${ratioVal}%)</span>
+                    <span class="text-slate-600 dark:text-slate-400 font-semibold">Today (${ratioVal}%)</span>
                   </div>
                   <div class="grid grid-cols-45 sm:grid-cols-90 gap-0.5 sm:gap-1 h-3" aria-hidden="true">
                     ${barsHtml}
@@ -668,15 +746,16 @@
 
       function refreshFeeds() {
         const timestamp = new Date().getTime();
+        const activeTheme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
 
         const headerIframe = document.getElementById('header-uptime-iframe');
         if (headerIframe) {
-          headerIframe.src = 'https://badge.uptimerobot.com/psp/e455d74df3ea41f2abb5d43e07a65067?style=logo&theme=light&_t=' + timestamp;
+          headerIframe.src = `https://badge.uptimerobot.com/psp/e455d74df3ea41f2abb5d43e07a65067?style=logo&theme=${activeTheme}&_t=` + timestamp;
         }
 
         const mainIframe = document.getElementById('main-uptime-iframe');
         if (mainIframe) {
-          mainIframe.src = 'https://badge.uptimerobot.com/psp/e455d74df3ea41f2abb5d43e07a65067?style=logo&theme=light&_t=' + timestamp;
+          mainIframe.src = `https://badge.uptimerobot.com/psp/e455d74df3ea41f2abb5d43e07a65067?style=logo&theme=${activeTheme}&_t=` + timestamp;
         }
 
         fetch(PSP_API + '?_t=' + timestamp)
