@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Developer Portal | The Forsyth Group LLC</title>
+  <meta name="description" content="Engineering command center, tool launcher, and cloud console directory for The Forsyth Group LLC development team." />
+  <meta name="theme-color" content="#ffffff" id="meta-theme-color" />
+  <meta name="robots" content="noindex, nofollow" />
+
+  <!-- Zero-flicker dark mode initialization -->
+  <script>
+    (function () {
+      const storedTheme = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (storedTheme === 'dark' || (!storedTheme && prefersDark)) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    })();
+  </script>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/jpeg" href="../images/logo.jpg" />
+
+  <!-- Google Fonts: Inter, Plus Jakarta Sans & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            slate: {
+              850: '#162033',
+              900: '#0f172a',
+              950: '#080d1a',
+            },
+            copper: {
+              50: '#fffbeb',
+              100: '#fef3c7',
+              200: '#fde68a',
+              300: '#fcd34d',
+              400: '#fbbf24',
+              500: '#d97706',
+              600: '#b45309',
+              700: '#92400e',
+              800: '#78350f',
+              900: '#451a03',
+              950: '#2a0e02',
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+            display: ['Plus Jakarta Sans', 'Inter', 'system-ui', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #f8fafc;
+      color: #0f172a;
+      overflow-x: hidden;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+    .dark body {
+      background-color: #080d1a;
+      color: #f1f5f9;
+    }
+    .bg-light-grid {
+      background-size: 48px 48px;
+      background-image:
+        linear-gradient(to right, rgba(15, 23, 42, 0.035) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(15, 23, 42, 0.035) 1px, transparent 1px);
+    }
+    .dark .bg-light-grid {
+      background-image:
+        linear-gradient(to right, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+    }
+    .tool-card {
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+    .tool-card:hover {
+      transform: translateY(-2px);
+    }
+  </style>
+
+  <!-- Google Identity Services (GIS) SDK -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <!-- Forsyth Group Authentication & Config -->
+  <script src="../js/auth-config.js"></script>
+  <script src="../js/auth.js"></script>
+</head>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans antialiased selection:bg-copper-700 selection:text-white min-h-screen flex flex-col">
+
+  <!-- ==================== HEADER ==================== -->
+  <header class="sticky top-0 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 shadow-xs">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-20">
+        
+        <!-- Brand & Breadcrumbs -->
+        <div class="flex items-center gap-3 sm:gap-4">
+          <a href="../" class="flex-shrink-0 flex items-center gap-3 group focus:outline-none focus-visible:ring-2 focus-visible:ring-copper-500 rounded-lg">
+            <img
+              src="../images/logo.jpg"
+              onerror="this.onerror=null; this.src='/images/logo.jpg';"
+              alt="The Forsyth Group LLC"
+              class="h-10 sm:h-12 w-auto object-contain bg-white rounded-lg p-1 shadow-2xs group-hover:scale-102 transition-transform"
+            />
+          </a>
+          <div class="border-l border-slate-200 dark:border-slate-700 pl-3 sm:pl-4">
+            <div class="flex items-center gap-2">
+              <span class="font-display font-bold text-slate-900 dark:text-white text-base sm:text-lg tracking-tight">Developer Portal</span>
+              <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-indigo-50 dark:bg-indigo-950/60 text-indigo-800 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 uppercase tracking-wider">
+                Internal
+              </span>
+            </div>
+            <span class="text-[11px] font-mono text-slate-500 dark:text-slate-400 hidden sm:block">Engineering Command &amp; Tool Hub</span>
+          </div>
+        </div>
+
+        <!-- Right Controls: Admin Link + Theme + Profile -->
+        <div class="flex items-center gap-3">
+          <!-- Hidden Admin Console Link (Shown ONLY if current user is Admin) -->
+          <a
+            id="nav-admin-link"
+            href="../admin/"
+            class="hidden items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-amber-800 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/50 hover:bg-amber-100 dark:hover:bg-amber-900/60 border border-amber-200 dark:border-amber-800 transition-colors"
+          >
+            <svg class="w-4 h-4 text-amber-600 dark:text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            Admin Roles
+          </a>
+
+          <!-- Dark/Light Mode Switch -->
+          <button
+            id="theme-toggle"
+            type="button"
+            class="p-2 rounded-lg text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-copper-500"
+            aria-label="Toggle visual theme"
+            title="Toggle theme"
+          >
+            <svg id="theme-sun" class="w-5 h-5 hidden dark:block" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+            </svg>
+            <svg id="theme-moon" class="w-5 h-5 block dark:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+            </svg>
+          </button>
+
+          <!-- Current User Profile Pill -->
+          <div id="user-header-profile" class="hidden items-center gap-2 pl-2 border-l border-slate-200 dark:border-slate-800">
+            <div class="relative">
+              <div id="user-avatar-container" class="w-8 h-8 rounded-full bg-gradient-to-tr from-indigo-600 to-sky-500 flex items-center justify-center text-white font-bold text-xs shadow-2xs overflow-hidden">
+                <span id="user-avatar-initials">DEV</span>
+              </div>
+              <span class="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-white dark:border-slate-900"></span>
+            </div>
+            <div class="hidden md:block text-left">
+              <div id="user-display-name" class="text-xs font-semibold text-slate-900 dark:text-white truncate max-w-[140px]">Team Member</div>
+              <div id="user-role-badge" class="text-[10px] font-mono text-indigo-600 dark:text-indigo-400 font-medium">Developer</div>
+            </div>
+            <button
+              id="btn-signout"
+              type="button"
+              class="ml-1 p-1.5 text-xs text-slate-500 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md transition-colors"
+              title="Sign Out"
+            >
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- ==================== MAIN CONTENT ==================== -->
+  <main class="flex-1 bg-light-grid py-8 sm:py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+      <!-- ==================== VIEW 1: SIGN IN REQUIRED ==================== -->
+      <section id="view-signin" class="hidden max-w-md mx-auto my-12">
+        <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xl overflow-hidden p-8 text-center transition-all">
+          <div class="w-16 h-16 mx-auto rounded-2xl bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800 flex items-center justify-center text-indigo-600 dark:text-indigo-400 mb-6 shadow-inner">
+            <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+            </svg>
+          </div>
+
+          <h1 class="font-display font-bold text-2xl text-slate-900 dark:text-white tracking-tight">
+            Developer Team Portal
+          </h1>
+          <p class="text-sm text-slate-600 dark:text-slate-400 mt-2 leading-relaxed">
+            Please authenticate with your authorized Google Account (@gmail.com, @wideareacomm.com, or @forsythgroup.org) to access Forsyth Group engineering consoles and repositories.
+          </p>
+
+          <!-- Official Google Identity Services Button Container -->
+          <div class="mt-8 flex flex-col items-center justify-center space-y-4">
+            <div id="google-signin-btn-container" class="min-h-[44px] flex items-center justify-center"></div>
+
+            <div class="relative w-full my-4">
+              <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-slate-200 dark:border-slate-800"></div></div>
+              <div class="relative flex justify-center text-xs uppercase"><span class="bg-white dark:bg-slate-900 px-3 text-slate-400 font-mono">Or Quick Sign In</span></div>
+            </div>
+
+            <!-- Developer Quick-Sign In -->
+            <div class="w-full space-y-2 text-left">
+              <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300">Authorized Team Members:</label>
+              <div class="grid grid-cols-1 gap-2">
+                <button
+                  type="button"
+                  onclick="handleQuickLogin('eric@forsythgroup.org', 'Eric Forsyth')"
+                  class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-lg border border-copper-200 dark:border-copper-800 bg-copper-50/50 dark:bg-copper-950/40 hover:bg-copper-100/70 dark:hover:bg-copper-900/50 transition-all text-xs font-semibold text-copper-900 dark:text-copper-200"
+                >
+                  <span class="flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                    eric@forsythgroup.org
+                  </span>
+                  <span class="font-mono text-[10px] text-copper-600 dark:text-copper-400 font-bold">Root Superadmin &rarr;</span>
+                </button>
+                <button
+                  type="button"
+                  onclick="handleQuickLogin('eric@wideareacomm.com', 'Eric Forsyth (WideAreaComm)')"
+                  class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-850 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all text-xs font-semibold text-slate-800 dark:text-slate-200"
+                >
+                  <span class="flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                    eric@wideareacomm.com
+                  </span>
+                  <span class="font-mono text-[10px] text-slate-500 font-bold">Admin &rarr;</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <p class="text-[11px] text-slate-400 dark:text-slate-500 mt-6 font-mono">
+            Controlled access via Google Identity Services &amp; Forsyth Group RBAC.
+          </p>
+        </div>
+      </section>
+
+      <!-- ==================== VIEW 2: ACCESS DENIED (UNASSIGNED) ==================== -->
+      <section id="view-denied" class="hidden max-w-lg mx-auto my-12">
+        <div class="bg-white dark:bg-slate-900 rounded-2xl border border-amber-200 dark:border-amber-900/50 shadow-xl overflow-hidden p-8 text-center">
+          <div class="w-16 h-16 mx-auto rounded-2xl bg-amber-50 dark:bg-amber-950/50 border border-amber-200 dark:border-amber-800 flex items-center justify-center text-amber-600 dark:text-amber-400 mb-6">
+            <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+          </div>
+
+          <h2 class="font-display font-bold text-2xl text-slate-900 dark:text-white tracking-tight">
+            Account Awaiting Role Assignment
+          </h2>
+          <p class="text-sm text-slate-600 dark:text-slate-400 mt-2 leading-relaxed">
+            You successfully authenticated with Google as <span id="denied-user-email" class="font-mono font-bold text-slate-900 dark:text-white">user@example.com</span>, but this account has not yet been granted <span class="font-semibold text-indigo-600 dark:text-indigo-400">Developer</span> permissions.
+          </p>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-3">
+            Please ask an administrator (<a href="mailto:eric@forsythgroup.org" class="text-copper-600 dark:text-copper-400 font-mono font-semibold">eric@forsythgroup.org</a>) to add your account to the role roster at <a href="../admin/" class="underline font-mono">/admin</a>.
+          </p>
+
+          <div class="mt-8 flex justify-center">
+            <button
+              type="button"
+              onclick="handleSignOut()"
+              class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-xs border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            >
+              Sign Out / Switch Google Account
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== VIEW 3: FULL DEVELOPER PORTAL ==================== -->
+      <section id="view-developer" class="hidden space-y-8">
+
+        <!-- Portal Hero Header -->
+        <div class="bg-gradient-to-r from-slate-900 via-slate-850 to-slate-900 rounded-3xl p-6 sm:p-8 text-white shadow-lg border border-slate-800 relative overflow-hidden">
+          <div class="absolute -right-16 -top-16 w-64 h-64 bg-copper-600/10 rounded-full blur-3xl pointer-events-none"></div>
+          <div class="absolute -left-16 -bottom-16 w-64 h-64 bg-indigo-600/10 rounded-full blur-3xl pointer-events-none"></div>
+
+          <div class="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+            <div class="max-w-2xl">
+              <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-xs font-mono bg-copper-500/20 text-copper-300 border border-copper-500/30 mb-3">
+                <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                The Forsyth Group LLC &bull; Engineering Hub
+              </div>
+              <h1 class="font-display font-extrabold text-2xl sm:text-3xl lg:text-4xl tracking-tight text-white">
+                Team Engineering Consoles &amp; Tools
+              </h1>
+              <p class="text-xs sm:text-sm text-slate-300 mt-2 leading-relaxed">
+                Centralized access directory for app store distribution, Gemini AI models, cloud compute, serverless Postgres, code repositories, and telemetry across all Forsyth Group software systems.
+              </p>
+            </div>
+
+            <!-- Quick Stats in Hero -->
+            <div class="grid grid-cols-3 gap-3 sm:gap-4 p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xs flex-shrink-0">
+              <div class="text-center px-2">
+                <span class="block text-2xl font-bold font-display text-copper-400" id="hero-stat-tools">25+</span>
+                <span class="block text-[10px] font-mono uppercase tracking-wider text-slate-400 mt-0.5">Consoles</span>
+              </div>
+              <div class="text-center px-2 border-x border-white/10">
+                <span class="block text-2xl font-bold font-display text-indigo-400" id="hero-stat-providers">10</span>
+                <span class="block text-[10px] font-mono uppercase tracking-wider text-slate-400 mt-0.5">Providers</span>
+              </div>
+              <div class="text-center px-2">
+                <span class="block text-2xl font-bold font-display text-emerald-400">7</span>
+                <span class="block text-[10px] font-mono uppercase tracking-wider text-slate-400 mt-0.5">Projects</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== SEARCH & CATEGORY FILTER BAR ==================== -->
+        <div class="space-y-4">
+          <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
+            
+            <!-- Search Input with Keyboard shortcut (Cmd+K) -->
+            <div class="relative flex-1 max-w-lg">
+              <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
+              <input
+                type="text"
+                id="search-tools-input"
+                oninput="renderToolGroups()"
+                placeholder="Search tools, providers, or projects (InvoiceCamp, Apple, Gemini, Neon)..."
+                class="w-full pl-10 pr-12 py-2.5 text-xs rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-copper-500 shadow-xs"
+              />
+              <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                <kbd class="hidden sm:inline-block px-1.5 py-0.5 text-[10px] font-mono font-semibold text-slate-400 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded">⌘K</kbd>
+              </div>
+            </div>
+
+            <!-- View Toggle & Quick Launch -->
+            <div class="flex items-center gap-2">
+              <button
+                type="button"
+                id="btn-favorites-filter"
+                onclick="toggleFavoritesOnlyFilter()"
+                class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-850 text-slate-700 dark:text-slate-300 transition-colors shadow-2xs"
+              >
+                <svg class="w-4 h-4 text-amber-500 fill-amber-500" viewBox="0 0 20 20">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                </svg>
+                <span>Starred Only</span>
+                <span id="badge-fav-count" class="ml-1 px-1.5 py-0.2 rounded-full text-[10px] bg-amber-100 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300 font-mono">0</span>
+              </button>
+            </div>
+
+          </div>
+
+          <!-- Category Filter Pills Bar -->
+          <div class="flex items-center gap-1.5 overflow-x-auto pb-2 scrollbar-none text-xs">
+            <button
+              type="button"
+              onclick="setCategoryFilter('all')"
+              class="cat-pill active flex-shrink-0 px-3 py-1.5 rounded-lg font-semibold bg-copper-600 text-white shadow-2xs transition-colors"
+              data-cat="all"
+            >
+              All Providers
+            </button>
+            <button
+              type="button"
+              onclick="setCategoryFilter('google')"
+              class="cat-pill flex-shrink-0 px-3 py-1.5 rounded-lg font-semibold text-slate-600 dark:text-slate-400 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-850 transition-colors"
+              data-cat="google"
+            >
+              Google
+            </button>
+            <button
+              type="button"
+              onclick="setCategoryFilter('apple')"
+              class="cat-pill flex-shrink-0 px-3 py-1.5 rounded-lg font-semibold text-slate-600 dark:text-slate-400 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-850 transition-colors"
+              data-cat="apple"
+            >
+              Apple
+            </button>
+            <button
+              type="button"
+              onclick="setCategoryFilter('anthropic')"
+              class="cat-pill flex-shrink-0 px-3 py-1.5 rounded-lg font-semibold text-slate-600 dark:text-slate-400 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-850 transition-colors"
+              data-cat="anthropic"
+            >
+              Claude AI
+            </button>
+            <button
+              type="button"
+              onclick="setCategoryFilter('openai')"
+              class="cat-pill flex-shrink-0 px-3 py-1.5 rounded-lg font-semibold text-slate-600 dark:text-slate-400 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-850 transition-colors"
+              data-cat="openai"
+            >
+              OpenAI
+            </button>
+            <button
+              type="button"
+              onclick="setCategoryFilter('github')"
+              class="cat-pill flex-shrink-0 px-3 py-1.5 rounded-lg font-semibold text-slate-600 dark:text-slate-400 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-850 transition-colors"
+              data-cat="github"
+            >
+              GitHub &amp; Repos
+            </button>
+            <button
+              type="button"
+              onclick="setCategoryFilter('hosting')"
+              class="cat-pill flex-shrink-0 px-3 py-1.5 rounded-lg font-semibold text-slate-600 dark:text-slate-400 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-850 transition-colors"
+              data-cat="hosting"
+            >
+              Vercel &amp; EAS
+            </button>
+            <button
+              type="button"
+              onclick="setCategoryFilter('databases')"
+              class="cat-pill flex-shrink-0 px-3 py-1.5 rounded-lg font-semibold text-slate-600 dark:text-slate-400 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-850 transition-colors"
+              data-cat="databases"
+            >
+              Neon &amp; Supabase
+            </button>
+            <button
+              type="button"
+              onclick="setCategoryFilter('identity-microsoft')"
+              class="cat-pill flex-shrink-0 px-3 py-1.5 rounded-lg font-semibold text-slate-600 dark:text-slate-400 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-850 transition-colors"
+              data-cat="identity-microsoft"
+            >
+              Microsoft Entra
+            </button>
+            <button
+              type="button"
+              onclick="setCategoryFilter('payments')"
+              class="cat-pill flex-shrink-0 px-3 py-1.5 rounded-lg font-semibold text-slate-600 dark:text-slate-400 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-850 transition-colors"
+              data-cat="payments"
+            >
+              Stripe
+            </button>
+            <button
+              type="button"
+              onclick="setCategoryFilter('monitoring')"
+              class="cat-pill flex-shrink-0 px-3 py-1.5 rounded-lg font-semibold text-slate-600 dark:text-slate-400 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-850 transition-colors"
+              data-cat="monitoring"
+            >
+              Monitoring
+            </button>
+            <button
+              type="button"
+              onclick="setCategoryFilter('applications')"
+              class="cat-pill flex-shrink-0 px-3 py-1.5 rounded-lg font-semibold text-slate-600 dark:text-slate-400 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-850 transition-colors"
+              data-cat="applications"
+            >
+              Live Apps
+            </button>
+          </div>
+        </div>
+
+        <!-- ==================== FAVORITES QUICK SHELF (IF ANY) ==================== -->
+        <div id="favorites-shelf-container" class="hidden space-y-3">
+          <div class="flex items-center gap-2">
+            <svg class="w-4 h-4 text-amber-500 fill-amber-500" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+            <h2 class="font-display font-bold text-sm text-slate-900 dark:text-white uppercase tracking-wider">
+              Starred Quick Launch Consoles
+            </h2>
+          </div>
+          <div id="favorites-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+
+        <!-- ==================== MAIN TOOL DIRECTORY (GROUPED BY PROVIDER) ==================== -->
+        <div id="tools-directory-container" class="space-y-10">
+          <!-- Dynamically populated by JS -->
+        </div>
+
+        <!-- Empty State for Search -->
+        <div id="tools-empty-state" class="hidden p-12 text-center bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800">
+          <svg class="w-12 h-12 mx-auto text-slate-300 dark:text-slate-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <p class="text-sm font-semibold text-slate-700 dark:text-slate-300 mt-3">No engineering tools match your search</p>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Try searching by tool name (e.g. "Neon", "Apple", "Claude") or clearing active filters.</p>
+          <button
+            type="button"
+            onclick="clearAllFilters()"
+            class="mt-4 px-4 py-2 rounded-xl text-xs font-semibold bg-copper-600 text-white"
+          >
+            Clear All Filters
+          </button>
+        </div>
+
+      </section>
+
+    </div>
+  </main>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer class="border-t border-slate-200 dark:border-slate-800/90 bg-white dark:bg-slate-950 py-6 text-xs text-slate-500">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-2">
+        <span class="font-display font-semibold text-slate-900 dark:text-white">The Forsyth Group LLC</span>
+        <span>&bull;</span>
+        <span class="font-mono text-[11px]">Developer Operations Hub</span>
+      </div>
+      <div class="flex items-center gap-4 text-xs font-mono">
+        <a href="../admin/" class="hover:text-copper-600 dark:hover:text-copper-400 transition-colors">Admin Console</a>
+        <a href="../" class="hover:text-copper-600 dark:hover:text-copper-400 transition-colors">Public Website</a>
+        <a href="https://status.forsythgroup.org" class="hover:text-copper-600 dark:hover:text-copper-400 transition-colors">System Status</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==================== SCRIPT LOGIC ==================== -->
+  <script>
+    let activeCatFilter = 'all';
+    let onlyFavoritesFilter = false;
+
+    // Theme Switcher
+    const themeBtn = document.getElementById('theme-toggle');
+    if (themeBtn) {
+      themeBtn.addEventListener('click', function () {
+        const isDark = document.documentElement.classList.toggle('dark');
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        const metaTheme = document.getElementById('meta-theme-color');
+        if (metaTheme) metaTheme.setAttribute('content', isDark ? '#080d1a' : '#ffffff');
+      });
+    }
+
+    // Sign Out
+    function handleSignOut() {
+      FGAuth.logout();
+      window.location.reload();
+    }
+    const btnSignOut = document.getElementById('btn-signout');
+    if (btnSignOut) btnSignOut.addEventListener('click', handleSignOut);
+
+    // Quick Sign-In for testing
+    function handleQuickLogin(email, name) {
+      const result = FGAuth.loginAs(email, name);
+      if (result.success) {
+        checkAuthAndRender();
+      }
+    }
+
+    // Category Filter Pills
+    function setCategoryFilter(cat) {
+      activeCatFilter = cat;
+      document.querySelectorAll('.cat-pill').forEach(btn => {
+        if (btn.dataset.cat === cat) {
+          btn.className = 'cat-pill active flex-shrink-0 px-3 py-1.5 rounded-lg font-semibold bg-copper-600 text-white shadow-2xs transition-colors';
+        } else {
+          btn.className = 'cat-pill flex-shrink-0 px-3 py-1.5 rounded-lg font-semibold text-slate-600 dark:text-slate-400 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-850 transition-colors';
+        }
+      });
+      renderToolGroups();
+    }
+
+    // Favorites Filter Toggle
+    function toggleFavoritesOnlyFilter() {
+      onlyFavoritesFilter = !onlyFavoritesFilter;
+      const btn = document.getElementById('btn-favorites-filter');
+      if (onlyFavoritesFilter) {
+        btn.classList.add('bg-amber-50', 'dark:bg-amber-950/60', 'border-amber-300', 'dark:border-amber-800');
+      } else {
+        btn.classList.remove('bg-amber-50', 'dark:bg-amber-950/60', 'border-amber-300', 'dark:border-amber-800');
+      }
+      renderToolGroups();
+    }
+
+    function clearAllFilters() {
+      document.getElementById('search-tools-input').value = '';
+      setCategoryFilter('all');
+      if (onlyFavoritesFilter) toggleFavoritesOnlyFilter();
+    }
+
+    // Keyboard shortcut Cmd+K / Ctrl+K
+    document.addEventListener('keydown', function (e) {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        const searchInput = document.getElementById('search-tools-input');
+        if (searchInput) {
+          searchInput.focus();
+          searchInput.select();
+        }
+      }
+    });
+
+    // Star / Favorite Toggle
+    function handleToggleFavorite(toolId, event) {
+      if (event) event.stopPropagation();
+      FGAuth.toggleFavorite(toolId);
+      renderToolGroups();
+      renderFavoritesShelf();
+    }
+
+    // Render Favorites Top Shelf
+    function renderFavoritesShelf() {
+      const favIds = FGAuth.getFavorites();
+      const shelfContainer = document.getElementById('favorites-shelf-container');
+      const grid = document.getElementById('favorites-grid');
+      const badgeCount = document.getElementById('badge-fav-count');
+
+      badgeCount.textContent = favIds.length;
+
+      if (!shelfContainer || !grid) return;
+      if (favIds.length === 0 || onlyFavoritesFilter) {
+        shelfContainer.classList.add('hidden');
+        return;
+      }
+
+      const allTools = [];
+      (window.FG_CONFIG.toolGroups || []).forEach(g => {
+        g.tools.forEach(t => allTools.push({ ...t, providerName: g.provider }));
+      });
+
+      const favTools = allTools.filter(t => favIds.includes(t.id));
+
+      if (favTools.length === 0) {
+        shelfContainer.classList.add('hidden');
+        return;
+      }
+
+      shelfContainer.classList.remove('hidden');
+      grid.innerHTML = favTools.map(tool => {
+        return `
+          <a
+            href="${tool.url}"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="group p-3.5 rounded-xl bg-white dark:bg-slate-900 border border-amber-200/80 dark:border-amber-900/60 hover:border-amber-400 dark:hover:border-amber-600 shadow-2xs hover:shadow-md transition-all flex items-center justify-between"
+          >
+            <div class="truncate mr-2">
+              <span class="block text-xs font-bold text-slate-900 dark:text-white group-hover:text-copper-600 dark:group-hover:text-copper-400 transition-colors truncate">
+                ${escapeHtml(tool.name)}
+              </span>
+              <span class="block text-[10px] font-mono text-slate-400 truncate">${escapeHtml(tool.subtitle || tool.providerName)}</span>
+            </div>
+            <div class="flex items-center gap-1.5 flex-shrink-0">
+              <button
+                type="button"
+                onclick="handleToggleFavorite('${tool.id}', event)"
+                class="p-1 rounded text-amber-500 hover:text-slate-400 transition-colors"
+                title="Unpin from top"
+              >
+                <svg class="w-3.5 h-3.5 fill-amber-500" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+              </button>
+              <svg class="w-3.5 h-3.5 text-slate-400 group-hover:text-copper-600 dark:group-hover:text-copper-400 group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              </svg>
+            </div>
+          </a>
+        `;
+      }).join('');
+    }
+
+    // Render Full Tools Directory
+    function renderToolGroups() {
+      const container = document.getElementById('tools-directory-container');
+      const emptyState = document.getElementById('tools-empty-state');
+      const query = (document.getElementById('search-tools-input')?.value || '').toLowerCase().trim();
+      const favIds = FGAuth.getFavorites();
+
+      const rawGroups = window.FG_CONFIG.toolGroups || [];
+      let totalVisibleTools = 0;
+
+      const renderedGroups = rawGroups.map(group => {
+        // Filter by category
+        if (activeCatFilter !== 'all' && group.id !== activeCatFilter) {
+          return null;
+        }
+
+        // Filter tools inside group
+        const matchingTools = group.tools.filter(tool => {
+          if (onlyFavoritesFilter && !favIds.includes(tool.id)) {
+            return false;
+          }
+
+          if (query) {
+            const matchName = tool.name.toLowerCase().includes(query);
+            const matchSub = (tool.subtitle || '').toLowerCase().includes(query);
+            const matchDesc = (tool.description || '').toLowerCase().includes(query);
+            const matchBadge = (tool.badge || '').toLowerCase().includes(query);
+            const matchProjects = (tool.relatedProjects || []).some(p => p.toLowerCase().includes(query));
+            const matchProvider = group.provider.toLowerCase().includes(query);
+            return matchName || matchSub || matchDesc || matchBadge || matchProjects || matchProvider;
+          }
+          return true;
+        });
+
+        if (matchingTools.length === 0) return null;
+        totalVisibleTools += matchingTools.length;
+
+        return `
+          <div class="space-y-4">
+            
+            <!-- Group Header -->
+            <div class="flex items-center justify-between pb-2 border-b border-slate-200 dark:border-slate-800">
+              <div class="flex items-center gap-2.5">
+                <span class="w-2.5 h-2.5 rounded-full ${getGroupColorDot(group.id)}"></span>
+                <h2 class="font-display font-bold text-lg sm:text-xl text-slate-900 dark:text-white tracking-tight">
+                  ${escapeHtml(group.provider)}
+                </h2>
+                <span class="text-xs font-mono text-slate-400">(${matchingTools.length})</span>
+              </div>
+              <span class="text-xs text-slate-500 dark:text-slate-400 hidden sm:block">${escapeHtml(group.description)}</span>
+            </div>
+
+            <!-- Tool Cards Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              ${matchingTools.map(tool => renderToolCard(tool, group)).join('')}
+            </div>
+
+          </div>
+        `;
+      }).filter(Boolean);
+
+      if (renderedGroups.length === 0) {
+        container.innerHTML = '';
+        emptyState.classList.remove('hidden');
+      } else {
+        emptyState.classList.add('hidden');
+        container.innerHTML = renderedGroups.join('');
+      }
+
+      renderFavoritesShelf();
+    }
+
+    // Render Individual Tool Card
+    function renderToolCard(tool, group) {
+      const isFav = FGAuth.isFavorite(tool.id);
+      return `
+        <div class="tool-card bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-xs hover:border-copper-500/50 dark:hover:border-copper-500/50 flex flex-col justify-between">
+          <div>
+            <!-- Card Header: Title + Star Button -->
+            <div class="flex items-start justify-between gap-2">
+              <div>
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-mono font-bold uppercase tracking-wider bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 mb-2">
+                  ${escapeHtml(tool.badge || group.provider)}
+                </span>
+                <h3 class="font-display font-bold text-base text-slate-900 dark:text-white leading-snug">
+                  ${escapeHtml(tool.name)}
+                </h3>
+                <span class="block text-xs font-mono text-slate-500 dark:text-slate-400 mt-0.5">
+                  ${escapeHtml(tool.subtitle || '')}
+                </span>
+              </div>
+              <button
+                type="button"
+                onclick="handleToggleFavorite('${tool.id}', event)"
+                class="p-1.5 rounded-lg text-slate-400 hover:text-amber-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors flex-shrink-0"
+                title="${isFav ? 'Unpin from quick launch' : 'Pin to favorites'}"
+              >
+                <svg class="w-4 h-4 ${isFav ? 'text-amber-500 fill-amber-500' : 'fill-none stroke-current'}" viewBox="0 0 20 20">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                </svg>
+              </button>
+            </div>
+
+            <!-- Description -->
+            <p class="text-xs text-slate-600 dark:text-slate-400 mt-3 leading-relaxed">
+              ${escapeHtml(tool.description)}
+            </p>
+
+            <!-- Related Projects Tags -->
+            ${tool.relatedProjects && tool.relatedProjects.length ? `
+              <div class="mt-4 flex items-center gap-1.5 flex-wrap">
+                <span class="text-[10px] font-mono text-slate-400">Projects:</span>
+                ${tool.relatedProjects.map(p => `
+                  <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-slate-50 dark:bg-slate-850 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-800">
+                    ${escapeHtml(p)}
+                  </span>
+                `).join('')}
+              </div>
+            ` : ''}
+          </div>
+
+          <!-- Card Actions Footer -->
+          <div class="mt-5 pt-4 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between gap-2">
+            ${tool.docsUrl ? `
+              <a
+                href="${tool.docsUrl}"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-[11px] font-mono text-slate-500 dark:text-slate-400 hover:text-copper-600 dark:hover:text-copper-400 transition-colors flex items-center gap-1"
+              >
+                Docs / API &rarr;
+              </a>
+            ` : '<span></span>'}
+
+            <a
+              href="${tool.url}"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-copper-700 dark:hover:bg-copper-400 dark:hover:text-slate-950 transition-colors shadow-2xs group"
+            >
+              <span>Launch</span>
+              <svg class="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              </svg>
+            </a>
+          </div>
+
+        </div>
+      `;
+    }
+
+    function getGroupColorDot(groupId) {
+      switch (groupId) {
+        case 'google': return 'bg-blue-500';
+        case 'apple': return 'bg-slate-400';
+        case 'anthropic': return 'bg-amber-500';
+        case 'openai': return 'bg-emerald-500';
+        case 'github': return 'bg-zinc-500';
+        case 'hosting': return 'bg-violet-500';
+        case 'databases': return 'bg-teal-500';
+        case 'identity-microsoft': return 'bg-sky-500';
+        case 'payments': return 'bg-indigo-500';
+        case 'monitoring': return 'bg-rose-500';
+        case 'applications': return 'bg-emerald-500';
+        default: return 'bg-copper-500';
+      }
+    }
+
+    // Helper: Escape HTML
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    // Auth & View Controller
+    function checkAuthAndRender() {
+      const viewSignin = document.getElementById('view-signin');
+      const viewDenied = document.getElementById('view-denied');
+      const viewDeveloper = document.getElementById('view-developer');
+      const userHeader = document.getElementById('user-header-profile');
+      const navAdminLink = document.getElementById('nav-admin-link');
+
+      const user = FGAuth.getCurrentUser();
+      const isAuth = FGAuth.isAuthenticated();
+      const isDev = FGAuth.isDeveloper();
+      const isAdmin = FGAuth.isAdmin();
+
+      if (!isAuth) {
+        // Show Sign In
+        viewSignin.classList.remove('hidden');
+        viewDenied.classList.add('hidden');
+        viewDeveloper.classList.add('hidden');
+        userHeader.classList.add('hidden');
+        userHeader.classList.remove('flex');
+        navAdminLink.classList.add('hidden');
+
+        // Initialize GIS Button
+        FGAuth.initGoogleAuth({
+          buttonContainerId: 'google-signin-btn-container',
+          callback: function (result) {
+            checkAuthAndRender();
+          }
+        });
+        return;
+      }
+
+      // User authenticated
+      userHeader.classList.remove('hidden');
+      userHeader.classList.add('flex');
+
+      document.getElementById('user-display-name').textContent = user.name || user.email.split('@')[0];
+      const initials = (user.name || user.email)
+        .split(' ')
+        .map(n => n[0])
+        .slice(0, 2)
+        .join('')
+        .toUpperCase();
+      document.getElementById('user-avatar-initials').textContent = initials;
+
+      if (user.isRootSuperadmin) {
+        document.getElementById('user-role-badge').textContent = 'Root Admin';
+      } else if (isAdmin) {
+        document.getElementById('user-role-badge').textContent = 'Administrator';
+      } else {
+        document.getElementById('user-role-badge').textContent = 'Developer';
+      }
+
+      // Show Admin console link ONLY if user has Admin role
+      if (isAdmin) {
+        navAdminLink.classList.remove('hidden');
+        navAdminLink.classList.add('inline-flex');
+      } else {
+        navAdminLink.classList.add('hidden');
+        navAdminLink.classList.remove('inline-flex');
+      }
+
+      if (!isDev) {
+        // Authenticated, but no Developer role
+        viewSignin.classList.add('hidden');
+        viewDenied.classList.remove('hidden');
+        viewDeveloper.classList.add('hidden');
+        document.getElementById('denied-user-email').textContent = user.email;
+        return;
+      }
+
+      // Fully Authorized Developer
+      viewSignin.classList.add('hidden');
+      viewDenied.classList.add('hidden');
+      viewDeveloper.classList.remove('hidden');
+
+      // Update hero counters
+      let totalToolsCount = 0;
+      (window.FG_CONFIG.toolGroups || []).forEach(g => totalToolsCount += g.tools.length);
+      const statTools = document.getElementById('hero-stat-tools');
+      if (statTools) statTools.textContent = totalToolsCount;
+
+      const statProviders = document.getElementById('hero-stat-providers');
+      if (statProviders) statProviders.textContent = (window.FG_CONFIG.toolGroups || []).length;
+
+      renderToolGroups();
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      checkAuthAndRender();
+    });
+  </script>
+</body>
+</html>

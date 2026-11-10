@@ -1,0 +1,1271 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Console | The Forsyth Group LLC</title>
+  <meta name="description" content="Restricted Administrator Console & User Role Governance for The Forsyth Group LLC." />
+  <meta name="theme-color" content="#ffffff" id="meta-theme-color" />
+  <meta name="robots" content="noindex, nofollow" />
+
+  <!-- Zero-flicker dark mode initialization -->
+  <script>
+    (function () {
+      const storedTheme = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (storedTheme === 'dark' || (!storedTheme && prefersDark)) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    })();
+  </script>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/jpeg" href="images/logo.jpg" />
+
+  <!-- Google Fonts: Inter, Plus Jakarta Sans & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            slate: {
+              850: '#162033',
+              900: '#0f172a',
+              950: '#080d1a',
+            },
+            copper: {
+              50: '#fffbeb',
+              100: '#fef3c7',
+              200: '#fde68a',
+              300: '#fcd34d',
+              400: '#fbbf24',
+              500: '#d97706',
+              600: '#b45309',
+              700: '#92400e',
+              800: '#78350f',
+              900: '#451a03',
+              950: '#2a0e02',
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+            display: ['Plus Jakarta Sans', 'Inter', 'system-ui', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #f8fafc;
+      color: #0f172a;
+      overflow-x: hidden;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+    .dark body {
+      background-color: #080d1a;
+      color: #f1f5f9;
+    }
+    .bg-light-grid {
+      background-size: 48px 48px;
+      background-image:
+        linear-gradient(to right, rgba(15, 23, 42, 0.035) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(15, 23, 42, 0.035) 1px, transparent 1px);
+    }
+    .dark .bg-light-grid {
+      background-image:
+        linear-gradient(to right, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+    }
+    .copper-rule {
+      height: 1px;
+      background: linear-gradient(90deg, transparent 0%, rgba(180, 83, 9, 0.35) 50%, transparent 100%);
+    }
+  </style>
+
+  <!-- Google Identity Services (GIS) SDK -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <!-- Forsyth Group Authentication & Config -->
+  <script src="js/auth-config.js"></script>
+  <script src="js/auth.js"></script>
+</head>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans antialiased selection:bg-copper-700 selection:text-white min-h-screen flex flex-col">
+
+  <!-- ==================== HEADER ==================== -->
+  <header class="sticky top-0 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 shadow-xs">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-20">
+        
+        <!-- Brand & Breadcrumbs -->
+        <div class="flex items-center gap-3 sm:gap-4">
+          <a href="." class="flex-shrink-0 flex items-center gap-3 group focus:outline-none focus-visible:ring-2 focus-visible:ring-copper-500 rounded-lg">
+            <img
+              src="images/logo.jpg"
+              onerror="this.onerror=null; this.src='/images/logo.jpg';"
+              alt="The Forsyth Group LLC"
+              class="h-10 sm:h-12 w-auto object-contain bg-white rounded-lg p-1 shadow-2xs group-hover:scale-102 transition-transform"
+            />
+          </a>
+          <div class="border-l border-slate-200 dark:border-slate-700 pl-3 sm:pl-4">
+            <div class="flex items-center gap-2">
+              <span class="font-display font-bold text-slate-900 dark:text-white text-base sm:text-lg tracking-tight">Admin Console</span>
+              <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800 uppercase tracking-wider">
+                Restricted
+              </span>
+            </div>
+            <span class="text-[11px] font-mono text-slate-500 dark:text-slate-400 hidden sm:block">Role &amp; Access Governance</span>
+          </div>
+        </div>
+
+        <!-- Right Controls: Theme + Auth State -->
+        <div class="flex items-center gap-3">
+          <!-- Developer Hub Link (Visible when authenticated) -->
+          <a
+            id="nav-dev-link"
+            href="developer/"
+            class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-700 dark:text-slate-300 hover:text-copper-600 dark:hover:text-copper-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+          >
+            <svg class="w-4 h-4 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+            </svg>
+            Developer Portal
+          </a>
+
+          <!-- Dark/Light Mode Switch -->
+          <button
+            id="theme-toggle"
+            type="button"
+            class="p-2 rounded-lg text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-copper-500"
+            aria-label="Toggle visual theme"
+            title="Toggle theme"
+          >
+            <svg id="theme-sun" class="w-5 h-5 hidden dark:block" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+            </svg>
+            <svg id="theme-moon" class="w-5 h-5 block dark:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+            </svg>
+          </button>
+
+          <!-- Current User Profile Pill -->
+          <div id="user-header-profile" class="hidden items-center gap-2 pl-2 border-l border-slate-200 dark:border-slate-800">
+            <div class="relative">
+              <div id="user-avatar-container" class="w-8 h-8 rounded-full bg-gradient-to-tr from-copper-600 to-amber-500 flex items-center justify-center text-white font-bold text-xs shadow-2xs overflow-hidden">
+                <span id="user-avatar-initials">EF</span>
+              </div>
+              <span class="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-white dark:border-slate-900"></span>
+            </div>
+            <div class="hidden md:block text-left">
+              <div id="user-display-name" class="text-xs font-semibold text-slate-900 dark:text-white truncate max-w-[140px]">Eric Forsyth</div>
+              <div id="user-role-badge" class="text-[10px] font-mono text-copper-600 dark:text-copper-400 font-medium">Root Admin</div>
+            </div>
+            <button
+              id="btn-signout"
+              type="button"
+              class="ml-1 p-1.5 text-xs text-slate-500 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md transition-colors"
+              title="Sign Out"
+            >
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- ==================== MAIN CONTENT AREA ==================== -->
+  <main class="flex-1 bg-light-grid py-8 sm:py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+      <!-- ==================== VIEW 1: SIGN IN REQUIRED ==================== -->
+      <section id="view-signin" class="hidden max-w-md mx-auto my-12">
+        <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xl overflow-hidden p-8 text-center transition-all">
+          <div class="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-tr from-copper-500/20 to-amber-500/20 dark:from-copper-900/40 dark:to-amber-900/40 border border-copper-200 dark:border-copper-800 flex items-center justify-center text-copper-600 dark:text-copper-400 mb-6 shadow-inner">
+            <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+            </svg>
+          </div>
+
+          <h1 class="font-display font-bold text-2xl text-slate-900 dark:text-white tracking-tight">
+            Restricted Admin Access
+          </h1>
+          <p class="text-sm text-slate-600 dark:text-slate-400 mt-2 leading-relaxed">
+            Please authenticate using your authorized Google account (<span class="font-mono text-copper-600 dark:text-copper-400 font-semibold">@gmail.com</span>, <span class="font-mono text-copper-600 dark:text-copper-400 font-semibold">@wideareacomm.com</span>, or <span class="font-mono text-copper-600 dark:text-copper-400 font-semibold">@forsythgroup.org</span>).
+          </p>
+
+          <!-- Official Google Identity Services Button Container -->
+          <div class="mt-8 flex flex-col items-center justify-center space-y-4">
+            <div id="google-signin-btn-container" class="min-h-[44px] flex items-center justify-center"></div>
+
+            <div class="relative w-full my-4">
+              <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-slate-200 dark:border-slate-800"></div></div>
+              <div class="relative flex justify-center text-xs uppercase"><span class="bg-white dark:bg-slate-900 px-3 text-slate-400 font-mono">Or Quick Access</span></div>
+            </div>
+
+            <!-- Instant Superadmin / Test Sign-In Switcher -->
+            <div class="w-full space-y-2 text-left">
+              <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300">Root Superadmin 1-Click Access:</label>
+              <div class="grid grid-cols-1 gap-2">
+                <button
+                  type="button"
+                  onclick="handleQuickLogin('eric@forsythgroup.org', 'Eric Forsyth')"
+                  class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-lg border border-copper-200 dark:border-copper-800 bg-copper-50/50 dark:bg-copper-950/40 hover:bg-copper-100/70 dark:hover:bg-copper-900/50 transition-all text-xs font-semibold text-copper-900 dark:text-copper-200"
+                >
+                  <span class="flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                    eric@forsythgroup.org
+                  </span>
+                  <span class="font-mono text-[10px] uppercase tracking-wider text-copper-600 dark:text-copper-400 font-bold">Root Admin &rarr;</span>
+                </button>
+                <button
+                  type="button"
+                  onclick="handleQuickLogin('eric@wideareacomm.com', 'Eric Forsyth (WideAreaComm)')"
+                  class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-850 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all text-xs font-semibold text-slate-800 dark:text-slate-200"
+                >
+                  <span class="flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                    eric@wideareacomm.com
+                  </span>
+                  <span class="font-mono text-[10px] uppercase tracking-wider text-slate-500 font-bold">Admin &rarr;</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <p class="text-[11px] text-slate-400 dark:text-slate-500 mt-6 font-mono">
+            Protected by Google OAuth 2.0 &amp; Forsyth Group RBAC Security.
+          </p>
+        </div>
+      </section>
+
+      <!-- ==================== VIEW 2: ACCESS DENIED (NON-ADMIN) ==================== -->
+      <section id="view-denied" class="hidden max-w-lg mx-auto my-12">
+        <div class="bg-white dark:bg-slate-900 rounded-2xl border border-rose-200 dark:border-rose-900/50 shadow-xl overflow-hidden p-8 text-center">
+          <div class="w-16 h-16 mx-auto rounded-2xl bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-800 flex items-center justify-center text-rose-600 dark:text-rose-400 mb-6">
+            <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+            </svg>
+          </div>
+
+          <h2 class="font-display font-bold text-2xl text-slate-900 dark:text-white tracking-tight">
+            Administrator Role Required
+          </h2>
+          <p class="text-sm text-slate-600 dark:text-slate-400 mt-2 leading-relaxed">
+            You are signed in as <span id="denied-user-email" class="font-mono font-bold text-slate-900 dark:text-white">user@example.com</span>. Your assigned roles do not include <span class="font-semibold text-rose-600 dark:text-rose-400">Admin</span> privileges.
+          </p>
+
+          <div id="denied-dev-prompt" class="mt-6 p-4 rounded-xl bg-slate-50 dark:bg-slate-850 border border-slate-200 dark:border-slate-700 text-left">
+            <div class="flex items-start gap-3">
+              <svg class="w-5 h-5 text-indigo-500 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <div>
+                <span class="block text-xs font-semibold text-slate-900 dark:text-white">Developer Access Active</span>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                  If you are working on software projects, you can access the developer console directly.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
+            <a
+              href="developer/"
+              class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-xs bg-indigo-600 hover:bg-indigo-700 text-white shadow-xs transition-colors"
+            >
+              Open Developer Portal
+            </a>
+            <button
+              type="button"
+              onclick="handleSignOut()"
+              class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-xs border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            >
+              Sign Out / Switch Account
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== VIEW 3: AUTHORIZED ADMIN CONSOLE ==================== -->
+      <section id="view-admin" class="hidden space-y-8">
+
+        <!-- Console Banner & Quick Summary -->
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pb-4 border-b border-slate-200 dark:border-slate-800">
+          <div>
+            <h1 class="font-display font-extrabold text-2xl sm:text-3xl text-slate-900 dark:text-white tracking-tight">
+              User Role &amp; Access Assignment
+            </h1>
+            <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1">
+              Grant or revoke <span class="font-semibold text-amber-700 dark:text-amber-400 font-mono">Admin</span> and <span class="font-semibold text-indigo-600 dark:text-indigo-400 font-mono">Developer</span> privileges for Forsyth Group systems.
+            </p>
+          </div>
+
+          <!-- Top Action Buttons -->
+          <div class="flex items-center gap-2 sm:gap-3 flex-wrap">
+            <button
+              type="button"
+              onclick="openAddUserModal()"
+              class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold bg-copper-600 hover:bg-copper-700 text-white shadow-xs hover:shadow-md transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-copper-500"
+            >
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+              </svg>
+              Add Team Member
+            </button>
+            <button
+              type="button"
+              onclick="exportRosterToFile()"
+              class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-850 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 transition-colors shadow-2xs"
+              title="Export Roster as JSON"
+            >
+              <svg class="w-3.5 h-3.5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+              </svg>
+              Export
+            </button>
+            <button
+              type="button"
+              onclick="triggerImportRoster()"
+              class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-850 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 transition-colors shadow-2xs"
+              title="Import Roster JSON"
+            >
+              <svg class="w-3.5 h-3.5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+              </svg>
+              Import
+            </button>
+            <input type="file" id="import-file-input" accept=".json" class="hidden" onchange="handleFileImport(event)" />
+          </div>
+        </div>
+
+        <!-- ==================== METRIC STAT CARDS ==================== -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <!-- Total Users -->
+          <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-xs">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-mono font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">Total Users</span>
+              <div class="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-900 flex items-center justify-center text-blue-600 dark:text-blue-400">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+              </div>
+            </div>
+            <div id="stat-total-users" class="mt-3 text-2xl sm:text-3xl font-display font-bold text-slate-900 dark:text-white">2</div>
+            <span class="block text-[11px] text-slate-500 dark:text-slate-400 mt-1">Configured in roster</span>
+          </div>
+
+          <!-- Active Admins -->
+          <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-xs">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-mono font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">Administrators</span>
+              <div class="w-8 h-8 rounded-lg bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-900 flex items-center justify-center text-amber-600 dark:text-amber-400">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
+              </div>
+            </div>
+            <div id="stat-admins" class="mt-3 text-2xl sm:text-3xl font-display font-bold text-slate-900 dark:text-white">2</div>
+            <span class="block text-[11px] text-amber-600 dark:text-amber-400 font-medium mt-1">Full governance &amp; /admin</span>
+          </div>
+
+          <!-- Active Developers -->
+          <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-xs">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-mono font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">Developers</span>
+              <div class="w-8 h-8 rounded-lg bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-900 flex items-center justify-center text-indigo-600 dark:text-indigo-400">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                </svg>
+              </div>
+            </div>
+            <div id="stat-developers" class="mt-3 text-2xl sm:text-3xl font-display font-bold text-slate-900 dark:text-white">2</div>
+            <span class="block text-[11px] text-indigo-600 dark:text-indigo-400 font-medium mt-1">Direct access to /developer</span>
+          </div>
+
+          <!-- Google Auth Status -->
+          <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-xs">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-mono font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">Auth Engine</span>
+              <div class="w-8 h-8 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-900 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+            </div>
+            <div id="stat-auth-status" class="mt-3 text-base font-display font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Google OAuth
+            </div>
+            <span class="block text-[11px] text-slate-500 dark:text-slate-400 mt-1">Google Identity Services (GIS)</span>
+          </div>
+        </div>
+
+        <!-- ==================== USER MANAGEMENT TABLE & FILTER ==================== -->
+        <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+          
+          <!-- Table Toolbar -->
+          <div class="p-4 sm:p-6 border-b border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
+            
+            <!-- Search Input -->
+            <div class="relative flex-1 max-w-md">
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
+              <input
+                type="text"
+                id="search-users-input"
+                oninput="renderUserTable()"
+                placeholder="Search by name, email, role, or department..."
+                class="w-full pl-9 pr-4 py-2 text-xs rounded-xl bg-slate-50 dark:bg-slate-850 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-copper-500"
+              />
+            </div>
+
+            <!-- Role Filter Pills -->
+            <div class="flex items-center gap-1.5 flex-wrap">
+              <button
+                type="button"
+                onclick="setRoleFilter('all')"
+                class="role-filter-btn active px-3 py-1.5 rounded-lg text-xs font-semibold bg-copper-600 text-white transition-colors"
+                data-filter="all"
+              >
+                All (<span id="count-filter-all">2</span>)
+              </button>
+              <button
+                type="button"
+                onclick="setRoleFilter('Admin')"
+                class="role-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                data-filter="Admin"
+              >
+                Admins (<span id="count-filter-admins">2</span>)
+              </button>
+              <button
+                type="button"
+                onclick="setRoleFilter('Developer')"
+                class="role-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                data-filter="Developer"
+              >
+                Developers (<span id="count-filter-devs">2</span>)
+              </button>
+            </div>
+
+          </div>
+
+          <!-- Table Container -->
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="border-b border-slate-200 dark:border-slate-800 bg-slate-50/75 dark:bg-slate-850/50 text-[11px] font-mono uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                  <th class="py-3.5 px-4 sm:px-6 font-semibold">User Identity</th>
+                  <th class="py-3.5 px-4 font-semibold">Department &amp; Notes</th>
+                  <th class="py-3.5 px-4 font-semibold">Assigned Roles</th>
+                  <th class="py-3.5 px-4 font-semibold">Quick Role Toggles</th>
+                  <th class="py-3.5 px-4 font-semibold">Status</th>
+                  <th class="py-3.5 px-4 sm:px-6 text-right font-semibold">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="users-table-body" class="divide-y divide-slate-100 dark:divide-slate-800/60 text-xs">
+                <!-- Dynamically populated by JS -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Empty State -->
+          <div id="users-empty-state" class="hidden p-12 text-center">
+            <svg class="w-12 h-12 mx-auto text-slate-300 dark:text-slate-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+            </svg>
+            <p class="text-sm font-semibold text-slate-700 dark:text-slate-300 mt-3">No matching team members found</p>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Try refining your search terms or filter criteria.</p>
+          </div>
+
+        </div>
+
+        <!-- ==================== GOOGLE AUTH & SYSTEM CONFIGURATION ==================== -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          
+          <!-- Google OAuth Client ID Configuration -->
+          <div class="lg:col-span-2 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-xs">
+            <div class="flex items-center gap-3 mb-4">
+              <div class="w-9 h-9 rounded-xl bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-900 flex items-center justify-center text-blue-600 dark:text-blue-400">
+                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12.545,10.239v3.821h5.445c-0.712,2.315-2.647,3.972-5.445,3.972c-3.332,0-6.033-2.701-6.033-6.032s2.701-6.032,6.033-6.032c1.498,0,2.866,0.549,3.921,1.453l2.814-2.814C17.503,2.988,15.139,2,12.545,2C7.021,2,2.543,6.477,2.543,12s4.478,10,10.002,10c8.396,0,10.249-7.85,9.426-11.761H12.545z"/>
+                </svg>
+              </div>
+              <div>
+                <h3 class="font-display font-bold text-base text-slate-900 dark:text-white">Google OAuth 2.0 Web Client Configuration</h3>
+                <span class="text-xs text-slate-500 dark:text-slate-400">Google Identity Services (GIS) Integration for forsythgroup.org</span>
+              </div>
+            </div>
+
+            <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
+              Enter your Google Cloud Web Application Client ID created under <a href="https://console.cloud.google.com/apis/credentials" target="_blank" class="text-copper-600 dark:text-copper-400 font-semibold underline">GCP Credentials</a>. <strong class="text-slate-900 dark:text-white">Important:</strong> In the GCP OAuth Consent Screen, choose <span class="font-mono bg-slate-100 dark:bg-slate-800 px-1 py-0.5 rounded font-bold">External</span> user type so developers with <span class="font-mono text-copper-600 dark:text-copper-400 font-semibold">@gmail.com</span>, <span class="font-mono text-copper-600 dark:text-copper-400 font-semibold">@wideareacomm.com</span>, or any email domain can sign in. Also verify <span class="font-mono bg-slate-100 dark:bg-slate-800 px-1 py-0.5 rounded">https://forsythgroup.org</span> and <span class="font-mono bg-slate-100 dark:bg-slate-800 px-1 py-0.5 rounded">https://www.forsythgroup.org</span> are listed under Authorized JavaScript Origins.
+            </p>
+
+            <form id="form-google-config" onsubmit="handleSaveGoogleClientId(event)" class="space-y-4">
+              <div>
+                <label for="input-google-client-id" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  OAuth 2.0 Client ID
+                </label>
+                <div class="flex gap-2">
+                  <input
+                    type="text"
+                    id="input-google-client-id"
+                    placeholder="xxxxxxxxxxxx-xxxxxxxxxxxxxxxx.apps.googleusercontent.com"
+                    class="flex-1 px-3 py-2 text-xs font-mono rounded-xl bg-slate-50 dark:bg-slate-850 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-copper-500"
+                  />
+                  <button
+                    type="submit"
+                    class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-slate-100 transition-colors"
+                  >
+                    Save Client ID
+                  </button>
+                </div>
+              </div>
+              <div id="client-id-save-feedback" class="hidden text-xs text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-1.5">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                Google Client ID successfully updated and active.
+              </div>
+            </form>
+          </div>
+
+          <!-- Security Audit Activity Summary -->
+          <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 shadow-xs flex flex-col">
+            <div class="flex items-center justify-between mb-4">
+              <div class="flex items-center gap-2">
+                <svg class="w-5 h-5 text-copper-600 dark:text-copper-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <h3 class="font-display font-bold text-base text-slate-900 dark:text-white">Security Audit Log</h3>
+              </div>
+              <button
+                type="button"
+                onclick="handleClearAuditLogs()"
+                class="text-[10px] font-mono text-slate-400 hover:text-rose-500 transition-colors"
+              >
+                Clear
+              </button>
+            </div>
+
+            <div id="audit-log-container" class="flex-1 overflow-y-auto max-h-56 space-y-2.5 text-xs font-mono pr-1">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+
+        </div>
+
+      </section>
+
+    </div>
+  </main>
+
+  <!-- ==================== MODAL: ADD / EDIT TEAM MEMBER ==================== -->
+  <div id="modal-user" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs">
+    <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl max-w-lg w-full overflow-hidden transition-all">
+      
+      <!-- Modal Header -->
+      <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+        <h3 id="modal-user-title" class="font-display font-bold text-lg text-slate-900 dark:text-white">Add Team Member</h3>
+        <button
+          type="button"
+          onclick="closeUserModal()"
+          class="p-1 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+        >
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <!-- Modal Form -->
+      <form id="form-user-modal" onsubmit="handleSaveUser(event)" class="p-6 space-y-4">
+        <input type="hidden" id="modal-user-original-email" value="" />
+
+        <div>
+          <label for="modal-input-email" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+            Google Account Email <span class="text-rose-500">*</span>
+          </label>
+          <input
+            type="email"
+            id="modal-input-email"
+            required
+            placeholder="developer@gmail.com, user@wideareacomm.com, or user@forsythgroup.org"
+            class="w-full px-3.5 py-2 text-xs rounded-xl bg-slate-50 dark:bg-slate-850 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-copper-500"
+          />
+          <span class="block text-[11px] text-slate-400 dark:text-slate-500 mt-1">Accepts any Google account domain (@gmail.com, @wideareacomm.com, @forsythgroup.org).</span>
+        </div>
+
+        <div>
+          <label for="modal-input-name" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+            Full Name
+          </label>
+          <input
+            type="text"
+            id="modal-input-name"
+            placeholder="Jane Doe"
+            class="w-full px-3.5 py-2 text-xs rounded-xl bg-slate-50 dark:bg-slate-850 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-copper-500"
+          />
+        </div>
+
+        <div>
+          <label for="modal-input-dept" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+            Department / Title
+          </label>
+          <input
+            type="text"
+            id="modal-input-dept"
+            placeholder="Lead Systems Engineer / Mobile Dev"
+            class="w-full px-3.5 py-2 text-xs rounded-xl bg-slate-50 dark:bg-slate-850 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-copper-500"
+          />
+        </div>
+
+        <!-- Role Assignment Checkboxes -->
+        <div class="pt-2">
+          <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-2">
+            Assign System Roles <span class="text-rose-500">*</span>
+          </label>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            
+            <!-- Developer Role Card -->
+            <label class="relative flex items-start gap-3 p-3 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-indigo-400 dark:hover:border-indigo-600 bg-slate-50/50 dark:bg-slate-850 cursor-pointer transition-all">
+              <input
+                type="checkbox"
+                id="modal-role-developer"
+                class="mt-0.5 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 w-4 h-4"
+                checked
+              />
+              <div class="text-xs">
+                <span class="font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+                  <span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span> Developer
+                </span>
+                <span class="block text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 leading-snug">
+                  Access to <span class="font-mono">/developer</span> console and engineering tool links.
+                </span>
+              </div>
+            </label>
+
+            <!-- Admin Role Card -->
+            <label class="relative flex items-start gap-3 p-3 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-amber-400 dark:hover:border-amber-600 bg-slate-50/50 dark:bg-slate-850 cursor-pointer transition-all">
+              <input
+                type="checkbox"
+                id="modal-role-admin"
+                class="mt-0.5 rounded border-slate-300 text-amber-600 focus:ring-amber-500 w-4 h-4"
+              />
+              <div class="text-xs">
+                <span class="font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+                  <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span> Admin
+                </span>
+                <span class="block text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 leading-snug">
+                  Access to <span class="font-mono">/admin</span> role assignment interface &amp; both portals.
+                </span>
+              </div>
+            </label>
+
+          </div>
+        </div>
+
+        <!-- Status & Notes -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+          <div>
+            <label for="modal-input-status" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+              Account Status
+            </label>
+            <select
+              id="modal-input-status"
+              class="w-full px-3 py-2 text-xs rounded-xl bg-slate-50 dark:bg-slate-850 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-copper-500"
+            >
+              <option value="active">Active (Permitted)</option>
+              <option value="suspended">Suspended (Blocked)</option>
+            </select>
+          </div>
+          <div>
+            <label for="modal-input-notes" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+              Administrative Notes
+            </label>
+            <input
+              type="text"
+              id="modal-input-notes"
+              placeholder="e.g. Backend Lead, contracted through Q4"
+              class="w-full px-3 py-2 text-xs rounded-xl bg-slate-50 dark:bg-slate-850 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-copper-500"
+            />
+          </div>
+        </div>
+
+        <div id="modal-error-message" class="hidden text-xs text-rose-600 dark:text-rose-400 font-semibold p-2.5 rounded-lg bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900">
+        </div>
+
+        <!-- Modal Footer Actions -->
+        <div class="pt-4 border-t border-slate-200 dark:border-slate-800 flex items-center justify-end gap-3">
+          <button
+            type="button"
+            onclick="closeUserModal()"
+            class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            class="px-5 py-2 rounded-xl text-xs font-semibold bg-copper-600 hover:bg-copper-700 text-white shadow-xs transition-colors"
+          >
+            Save User &amp; Permissions
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer class="border-t border-slate-200 dark:border-slate-800/90 bg-white dark:bg-slate-950 py-6 text-xs text-slate-500">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-2">
+        <span class="font-display font-semibold text-slate-900 dark:text-white">The Forsyth Group LLC</span>
+        <span>&bull;</span>
+        <span class="font-mono text-[11px]">Internal Admin &amp; Governance</span>
+      </div>
+      <div class="flex items-center gap-4 text-xs font-mono">
+        <a href="developer/" class="hover:text-copper-600 dark:hover:text-copper-400 transition-colors">Developer Portal</a>
+        <a href="." class="hover:text-copper-600 dark:hover:text-copper-400 transition-colors">Public Website</a>
+        <a href="mailto:eric@forsythgroup.org" class="text-copper-600 dark:text-copper-400">eric@forsythgroup.org</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==================== APPLICATION LOGIC SCRIPT ==================== -->
+  <script>
+    let activeRoleFilter = 'all';
+
+    // Theme Switcher Logic
+    const themeBtn = document.getElementById('theme-toggle');
+    if (themeBtn) {
+      themeBtn.addEventListener('click', function () {
+        const isDark = document.documentElement.classList.toggle('dark');
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        const metaTheme = document.getElementById('meta-theme-color');
+        if (metaTheme) metaTheme.setAttribute('content', isDark ? '#080d1a' : '#ffffff');
+      });
+    }
+
+    // Sign Out handler
+    function handleSignOut() {
+      FGAuth.logout();
+      window.location.reload();
+    }
+    const btnSignOut = document.getElementById('btn-signout');
+    if (btnSignOut) btnSignOut.addEventListener('click', handleSignOut);
+
+    // Direct Quick Login (for Eric / local testing)
+    function handleQuickLogin(email, name) {
+      const result = FGAuth.loginAs(email, name);
+      if (result.success) {
+        checkAuthAndRender();
+      }
+    }
+
+    // Roster filter pill logic
+    function setRoleFilter(filter) {
+      activeRoleFilter = filter;
+      document.querySelectorAll('.role-filter-btn').forEach(btn => {
+        if (btn.dataset.filter === filter) {
+          btn.className = 'role-filter-btn active px-3 py-1.5 rounded-lg text-xs font-semibold bg-copper-600 text-white transition-colors';
+        } else {
+          btn.className = 'role-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors';
+        }
+      });
+      renderUserTable();
+    }
+
+    // Render User Table
+    function renderUserTable() {
+      const users = FGAuth.getUsers();
+      const tbody = document.getElementById('users-table-body');
+      const emptyState = document.getElementById('users-empty-state');
+      const query = (document.getElementById('search-users-input')?.value || '').toLowerCase().trim();
+
+      // Update counters
+      const totalCount = users.length;
+      const adminCount = users.filter(u => Array.isArray(u.roles) && u.roles.includes('Admin')).length;
+      const devCount = users.filter(u => Array.isArray(u.roles) && u.roles.includes('Developer')).length;
+
+      document.getElementById('stat-total-users').textContent = totalCount;
+      document.getElementById('stat-admins').textContent = adminCount;
+      document.getElementById('stat-developers').textContent = devCount;
+
+      document.getElementById('count-filter-all').textContent = totalCount;
+      document.getElementById('count-filter-admins').textContent = adminCount;
+      document.getElementById('count-filter-devs').textContent = devCount;
+
+      // Filter
+      const filtered = users.filter(u => {
+        // Role filter
+        if (activeRoleFilter !== 'all') {
+          if (!Array.isArray(u.roles) || !u.roles.includes(activeRoleFilter)) return false;
+        }
+        // Text query
+        if (query) {
+          const matchEmail = u.email.toLowerCase().includes(query);
+          const matchName = (u.name || '').toLowerCase().includes(query);
+          const matchDept = (u.department || '').toLowerCase().includes(query);
+          const matchNotes = (u.notes || '').toLowerCase().includes(query);
+          return matchEmail || matchName || matchDept || matchNotes;
+        }
+        return true;
+      });
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = '';
+        emptyState.classList.remove('hidden');
+        return;
+      }
+      emptyState.classList.add('hidden');
+
+      tbody.innerHTML = filtered.map(user => {
+        const isSuperadmin = !!user.isRootSuperadmin || FGAuth.isRootSuperadminEmail(user.email);
+        const hasAdmin = Array.isArray(user.roles) && user.roles.includes('Admin');
+        const hasDev = Array.isArray(user.roles) && user.roles.includes('Developer');
+        const isActive = user.status === 'active';
+
+        const initials = (user.name || user.email)
+          .split(' ')
+          .map(n => n[0])
+          .slice(0, 2)
+          .join('')
+          .toUpperCase();
+
+        return `
+          <tr class="hover:bg-slate-50/80 dark:hover:bg-slate-850/60 transition-colors">
+            <!-- User Identity -->
+            <td class="py-4 px-4 sm:px-6">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-full ${isSuperadmin ? 'bg-gradient-to-tr from-copper-600 to-amber-500' : 'bg-slate-700'} flex items-center justify-center text-white font-bold text-xs shadow-2xs flex-shrink-0">
+                  ${initials}
+                </div>
+                <div>
+                  <div class="flex items-center gap-2">
+                    <span class="font-semibold text-slate-900 dark:text-white text-xs">${escapeHtml(user.name || user.email.split('@')[0])}</span>
+                    ${isSuperadmin ? `
+                      <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-mono font-bold bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
+                        Root Admin
+                      </span>
+                    ` : ''}
+                  </div>
+                  <span class="block font-mono text-[11px] text-slate-500 dark:text-slate-400">${escapeHtml(user.email)}</span>
+                </div>
+              </div>
+            </td>
+
+            <!-- Department / Notes -->
+            <td class="py-4 px-4 text-slate-600 dark:text-slate-300">
+              <span class="block font-medium">${escapeHtml(user.department || 'Engineering')}</span>
+              ${user.notes ? `<span class="block text-[11px] text-slate-400 dark:text-slate-500 truncate max-w-xs">${escapeHtml(user.notes)}</span>` : ''}
+            </td>
+
+            <!-- Assigned Roles Badges -->
+            <td class="py-4 px-4">
+              <div class="flex items-center gap-1.5 flex-wrap">
+                ${hasAdmin ? `
+                  <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-semibold bg-amber-100/70 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
+                    <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span> Admin
+                  </span>
+                ` : ''}
+                ${hasDev ? `
+                  <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-semibold bg-indigo-100/70 dark:bg-indigo-950/80 text-indigo-800 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">
+                    <span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span> Developer
+                  </span>
+                ` : ''}
+                ${!hasAdmin && !hasDev ? `
+                  <span class="text-[11px] font-mono text-slate-400">None</span>
+                ` : ''}
+              </div>
+            </td>
+
+            <!-- Quick Role Toggles -->
+            <td class="py-4 px-4">
+              <div class="flex items-center gap-3">
+                <label class="inline-flex items-center gap-1.5 cursor-pointer text-[11px] font-medium text-slate-700 dark:text-slate-300 ${isSuperadmin ? 'opacity-70 cursor-not-allowed' : ''}">
+                  <input
+                    type="checkbox"
+                    ${hasAdmin ? 'checked' : ''}
+                    ${isSuperadmin ? 'disabled' : ''}
+                    onchange="toggleUserRole('${escapeJs(user.email)}', 'Admin', this.checked)"
+                    class="rounded border-slate-300 text-amber-600 focus:ring-amber-500 w-3.5 h-3.5"
+                  />
+                  <span>Admin</span>
+                </label>
+                <label class="inline-flex items-center gap-1.5 cursor-pointer text-[11px] font-medium text-slate-700 dark:text-slate-300 ${isSuperadmin ? 'opacity-70 cursor-not-allowed' : ''}">
+                  <input
+                    type="checkbox"
+                    ${hasDev ? 'checked' : ''}
+                    ${isSuperadmin ? 'disabled' : ''}
+                    onchange="toggleUserRole('${escapeJs(user.email)}', 'Developer', this.checked)"
+                    class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 w-3.5 h-3.5"
+                  />
+                  <span>Dev</span>
+                </label>
+              </div>
+            </td>
+
+            <!-- Status -->
+            <td class="py-4 px-4">
+              <button
+                type="button"
+                ${isSuperadmin ? 'disabled' : ''}
+                onclick="toggleUserStatus('${escapeJs(user.email)}', '${isActive ? 'suspended' : 'active'}')"
+                class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-semibold border ${
+                  isActive
+                    ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800'
+                    : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border-slate-300 dark:border-slate-700'
+                } ${isSuperadmin ? 'cursor-default' : 'hover:opacity-80 transition-opacity'}"
+              >
+                <span class="w-1.5 h-1.5 rounded-full ${isActive ? 'bg-emerald-500' : 'bg-slate-400'}"></span>
+                <span>${isActive ? 'Active' : 'Suspended'}</span>
+              </button>
+            </td>
+
+            <!-- Actions -->
+            <td class="py-4 px-4 sm:px-6 text-right">
+              <div class="inline-flex items-center gap-1">
+                <button
+                  type="button"
+                  onclick="openEditUserModal('${escapeJs(user.email)}')"
+                  class="p-1.5 text-slate-500 hover:text-slate-900 dark:hover:text-white rounded-md hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                  title="Edit User Details"
+                >
+                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                </button>
+                <button
+                  type="button"
+                  ${isSuperadmin ? 'disabled' : ''}
+                  onclick="handleDeleteUser('${escapeJs(user.email)}')"
+                  class="p-1.5 text-slate-400 ${isSuperadmin ? 'opacity-30 cursor-not-allowed' : 'hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40'} rounded-md transition-colors"
+                  title="${isSuperadmin ? 'Protected root superadmin' : 'Delete user'}"
+                >
+                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // Toggle Role with Checkbox
+    function toggleUserRole(email, roleName, isChecked) {
+      try {
+        const user = FGAuth.getUserByEmail(email);
+        if (!user) return;
+        let roles = Array.isArray(user.roles) ? [...user.roles] : [];
+        if (isChecked) {
+          if (!roles.includes(roleName)) roles.push(roleName);
+        } else {
+          roles = roles.filter(r => r !== roleName);
+        }
+        FGAuth.updateUser(email, { roles });
+        renderUserTable();
+        renderAuditLogs();
+      } catch (err) {
+        alert(err.message);
+        renderUserTable();
+      }
+    }
+
+    // Toggle Status
+    function toggleUserStatus(email, newStatus) {
+      try {
+        FGAuth.updateUser(email, { status: newStatus });
+        renderUserTable();
+        renderAuditLogs();
+      } catch (err) {
+        alert(err.message);
+      }
+    }
+
+    // Delete User
+    function handleDeleteUser(email) {
+      if (confirm(`Are you sure you want to revoke access for ${email}?`)) {
+        try {
+          FGAuth.deleteUser(email);
+          renderUserTable();
+          renderAuditLogs();
+        } catch (err) {
+          alert(err.message);
+        }
+      }
+    }
+
+    // Modal: Open Add User
+    function openAddUserModal() {
+      document.getElementById('modal-user-title').textContent = 'Add Team Member';
+      document.getElementById('modal-user-original-email').value = '';
+      document.getElementById('modal-input-email').value = '';
+      document.getElementById('modal-input-email').disabled = false;
+      document.getElementById('modal-input-name').value = '';
+      document.getElementById('modal-input-dept').value = 'Engineering';
+      document.getElementById('modal-role-developer').checked = true;
+      document.getElementById('modal-role-admin').checked = false;
+      document.getElementById('modal-input-status').value = 'active';
+      document.getElementById('modal-input-notes').value = '';
+      document.getElementById('modal-error-message').classList.add('hidden');
+      document.getElementById('modal-user').classList.remove('hidden');
+    }
+
+    // Modal: Open Edit User
+    function openEditUserModal(email) {
+      const user = FGAuth.getUserByEmail(email);
+      if (!user) return;
+      document.getElementById('modal-user-title').textContent = 'Edit Team Member Permissions';
+      document.getElementById('modal-user-original-email').value = user.email;
+      document.getElementById('modal-input-email').value = user.email;
+      document.getElementById('modal-input-email').disabled = true;
+      document.getElementById('modal-input-name').value = user.name || '';
+      document.getElementById('modal-input-dept').value = user.department || '';
+      document.getElementById('modal-role-developer').checked = Array.isArray(user.roles) && user.roles.includes('Developer');
+      document.getElementById('modal-role-admin').checked = Array.isArray(user.roles) && user.roles.includes('Admin');
+      document.getElementById('modal-input-status').value = user.status || 'active';
+      document.getElementById('modal-input-notes').value = user.notes || '';
+      document.getElementById('modal-error-message').classList.add('hidden');
+      document.getElementById('modal-user').classList.remove('hidden');
+    }
+
+    function closeUserModal() {
+      document.getElementById('modal-user').classList.add('hidden');
+    }
+
+    // Modal: Save User
+    function handleSaveUser(e) {
+      e.preventDefault();
+      const originalEmail = document.getElementById('modal-user-original-email').value;
+      const email = document.getElementById('modal-input-email').value.trim();
+      const name = document.getElementById('modal-input-name').value.trim();
+      const dept = document.getElementById('modal-input-dept').value.trim();
+      const notes = document.getElementById('modal-input-notes').value.trim();
+      const status = document.getElementById('modal-input-status').value;
+      const errorEl = document.getElementById('modal-error-message');
+
+      const roles = [];
+      if (document.getElementById('modal-role-developer').checked) roles.push('Developer');
+      if (document.getElementById('modal-role-admin').checked) roles.push('Admin');
+
+      if (roles.length === 0) {
+        errorEl.textContent = 'Please assign at least one role (Developer or Admin).';
+        errorEl.classList.remove('hidden');
+        return;
+      }
+
+      try {
+        if (originalEmail) {
+          // Update
+          FGAuth.updateUser(originalEmail, {
+            name,
+            department: dept,
+            notes,
+            status,
+            roles
+          });
+        } else {
+          // Add
+          FGAuth.addUser({
+            email,
+            name,
+            department: dept,
+            notes,
+            status,
+            roles
+          });
+        }
+        closeUserModal();
+        renderUserTable();
+        renderAuditLogs();
+      } catch (err) {
+        errorEl.textContent = err.message;
+        errorEl.classList.remove('hidden');
+      }
+    }
+
+    // Render Security Audit Logs
+    function renderAuditLogs() {
+      const logs = FGAuth.getAuditLogs();
+      const container = document.getElementById('audit-log-container');
+      if (!container) return;
+
+      if (!logs || logs.length === 0) {
+        container.innerHTML = '<p class="text-slate-400 italic">No recent security events.</p>';
+        return;
+      }
+
+      container.innerHTML = logs.slice(0, 25).map(log => {
+        const time = new Date(log.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        return `
+          <div class="py-1 border-b border-slate-100 dark:border-slate-800/60 last:border-0 flex items-start gap-2">
+            <span class="text-slate-400 text-[10px] whitespace-nowrap mt-0.5">${time}</span>
+            <div class="truncate">
+              <span class="text-copper-600 dark:text-copper-400 font-bold">${escapeHtml(log.action)}</span>
+              <span class="text-slate-600 dark:text-slate-300">${escapeHtml(log.details)}</span>
+              <span class="text-slate-400 text-[10px] block">by ${escapeHtml(log.actor)}</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function handleClearAuditLogs() {
+      if (confirm('Clear audit logs?')) {
+        FGAuth.clearAuditLogs();
+        renderAuditLogs();
+      }
+    }
+
+    // Google Client ID Config
+    function handleSaveGoogleClientId(e) {
+      e.preventDefault();
+      const val = document.getElementById('input-google-client-id').value;
+      FGAuth.setGoogleClientId(val);
+      const feedback = document.getElementById('client-id-save-feedback');
+      feedback.classList.remove('hidden');
+      setTimeout(() => feedback.classList.add('hidden'), 3500);
+      renderAuditLogs();
+    }
+
+    // Export Roster JSON
+    function exportRosterToFile() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(FGAuth.exportRosterJSON());
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", `forsythgroup-roster-${new Date().toISOString().slice(0, 10)}.json`);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+    }
+
+    // Import Roster JSON
+    function triggerImportRoster() {
+      document.getElementById('import-file-input').click();
+    }
+
+    function handleFileImport(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function (event) {
+        const res = FGAuth.importRosterJSON(event.target.result);
+        if (res.success) {
+          alert(`Roster imported successfully! Added ${res.addedCount} new users, updated ${res.updatedCount}.`);
+          renderUserTable();
+          renderAuditLogs();
+        } else {
+          alert('Import error: ' + res.error);
+        }
+      };
+      reader.readAsText(file);
+      e.target.value = '';
+    }
+
+    // Helper: Escape HTML
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+    function escapeJs(str) {
+      if (!str) return '';
+      return String(str).replace(/'/g, "\\'");
+    }
+
+    // Auth & View Controller
+    function checkAuthAndRender() {
+      const viewSignin = document.getElementById('view-signin');
+      const viewDenied = document.getElementById('view-denied');
+      const viewAdmin = document.getElementById('view-admin');
+      const userHeader = document.getElementById('user-header-profile');
+      const navDevLink = document.getElementById('nav-dev-link');
+
+      const user = FGAuth.getCurrentUser();
+      const isAuth = FGAuth.isAuthenticated();
+      const isAdmin = FGAuth.isAdmin();
+
+      if (!isAuth) {
+        // Show Sign In
+        viewSignin.classList.remove('hidden');
+        viewDenied.classList.add('hidden');
+        viewAdmin.classList.add('hidden');
+        userHeader.classList.add('hidden');
+        userHeader.classList.remove('flex');
+        navDevLink.classList.add('hidden');
+
+        // Initialize GIS Button
+        FGAuth.initGoogleAuth({
+          buttonContainerId: 'google-signin-btn-container',
+          callback: function (result) {
+            checkAuthAndRender();
+          }
+        });
+        return;
+      }
+
+      // User is authenticated
+      userHeader.classList.remove('hidden');
+      userHeader.classList.add('flex');
+      navDevLink.classList.remove('hidden');
+
+      document.getElementById('user-display-name').textContent = user.name || user.email.split('@')[0];
+      const initials = (user.name || user.email)
+        .split(' ')
+        .map(n => n[0])
+        .slice(0, 2)
+        .join('')
+        .toUpperCase();
+      document.getElementById('user-avatar-initials').textContent = initials;
+
+      if (user.isRootSuperadmin) {
+        document.getElementById('user-role-badge').textContent = 'Root Superadmin';
+      } else if (isAdmin) {
+        document.getElementById('user-role-badge').textContent = 'Administrator';
+      } else {
+        document.getElementById('user-role-badge').textContent = 'Developer';
+      }
+
+      if (!isAdmin) {
+        // Authenticated, but not Admin
+        viewSignin.classList.add('hidden');
+        viewDenied.classList.remove('hidden');
+        viewAdmin.classList.add('hidden');
+        document.getElementById('denied-user-email').textContent = user.email;
+        return;
+      }
+
+      // Fully Authorized Admin
+      viewSignin.classList.add('hidden');
+      viewDenied.classList.add('hidden');
+      viewAdmin.classList.remove('hidden');
+
+      // Populate config field
+      const clientIdInput = document.getElementById('input-google-client-id');
+      if (clientIdInput) clientIdInput.value = FGAuth.getGoogleClientId();
+
+      renderUserTable();
+      renderAuditLogs();
+    }
+
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', function () {
+      checkAuthAndRender();
+    });
+  </script>
+</body>
+</html>
