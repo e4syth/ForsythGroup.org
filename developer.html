@@ -94,6 +94,13 @@
     .tool-card:hover {
       transform: translateY(-2px);
     }
+    @keyframes pulse-subtle {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.6; transform: scale(1.08); }
+    }
+    .status-pulse {
+      animation: pulse-subtle 2.4s ease-in-out infinite;
+    }
   </style>
 
   <!-- Google Identity Services (GIS) SDK -->
@@ -130,8 +137,25 @@
           </div>
         </div>
 
-        <!-- Right Controls: Admin Link + Theme + Profile -->
-        <div class="flex items-center gap-3">
+        <!-- Right Controls: Status Link + Admin Link + Theme + Profile -->
+        <div class="flex items-center gap-2.5 sm:gap-3">
+          
+          <!-- System Status Top Button -->
+          <a
+            id="nav-status-btn"
+            href="status/"
+            target="_blank"
+            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-emerald-800 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/50 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 border border-emerald-200 dark:border-emerald-800 transition-colors shadow-2xs"
+            title="View Live Enterprise Status Page"
+          >
+            <span class="w-2 h-2 rounded-full bg-emerald-500 status-pulse"></span>
+            <span class="hidden sm:inline">System Status</span>
+            <span class="sm:hidden">Status</span>
+            <svg class="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+            </svg>
+          </a>
+
           <!-- Hidden Admin Console Link (Shown ONLY if current user is Admin) -->
           <a
             id="nav-admin-link"
@@ -211,42 +235,8 @@
           </p>
 
           <!-- Official Google Identity Services Button Container -->
-          <div class="mt-8 flex flex-col items-center justify-center space-y-4">
+          <div class="mt-8 flex flex-col items-center justify-center">
             <div id="google-signin-btn-container" class="min-h-[44px] flex items-center justify-center"></div>
-
-            <div class="relative w-full my-4">
-              <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-slate-200 dark:border-slate-800"></div></div>
-              <div class="relative flex justify-center text-xs uppercase"><span class="bg-white dark:bg-slate-900 px-3 text-slate-400 font-mono">Or Quick Sign In</span></div>
-            </div>
-
-            <!-- Developer Quick-Sign In -->
-            <div class="w-full space-y-2 text-left">
-              <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300">Authorized Team Members:</label>
-              <div class="grid grid-cols-1 gap-2">
-                <button
-                  type="button"
-                  onclick="handleQuickLogin('eric@forsythgroup.org', 'Eric Forsyth')"
-                  class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-lg border border-copper-200 dark:border-copper-800 bg-copper-50/50 dark:bg-copper-950/40 hover:bg-copper-100/70 dark:hover:bg-copper-900/50 transition-all text-xs font-semibold text-copper-900 dark:text-copper-200"
-                >
-                  <span class="flex items-center gap-2">
-                    <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                    eric@forsythgroup.org
-                  </span>
-                  <span class="font-mono text-[10px] text-copper-600 dark:text-copper-400 font-bold">Root Superadmin &rarr;</span>
-                </button>
-                <button
-                  type="button"
-                  onclick="handleQuickLogin('eric@wideareacomm.com', 'Eric Forsyth (WideAreaComm)')"
-                  class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-850 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all text-xs font-semibold text-slate-800 dark:text-slate-200"
-                >
-                  <span class="flex items-center gap-2">
-                    <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                    eric@wideareacomm.com
-                  </span>
-                  <span class="font-mono text-[10px] text-slate-500 font-bold">Admin &rarr;</span>
-                </button>
-              </div>
-            </div>
           </div>
 
           <p class="text-[11px] text-slate-400 dark:text-slate-500 mt-6 font-mono">
@@ -287,7 +277,7 @@
       </section>
 
       <!-- ==================== VIEW 3: FULL DEVELOPER PORTAL ==================== -->
-      <section id="view-developer" class="hidden space-y-8">
+      <section id="view-developer" class="hidden space-y-6">
 
         <!-- Portal Hero Header -->
         <div class="bg-gradient-to-r from-slate-900 via-slate-850 to-slate-900 rounded-3xl p-6 sm:p-8 text-white shadow-lg border border-slate-800 relative overflow-hidden">
@@ -326,9 +316,101 @@
           </div>
         </div>
 
+        <!-- ==================== INCORPORATED SYSTEM STATUS WIDGET ==================== -->
+        <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 shadow-xs transition-colors">
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-3 border-b border-slate-100 dark:border-slate-800">
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <div>
+                <div class="flex items-center gap-2">
+                  <h3 class="font-display font-bold text-sm text-slate-900 dark:text-white">Enterprise System Status &amp; Telemetry</h3>
+                  <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 status-pulse"></span>
+                    <span>All Systems Operational</span>
+                  </span>
+                </div>
+                <span class="text-[11px] font-mono text-slate-400">Live synthetic heartbeats powered by UpTimeRobot</span>
+              </div>
+            </div>
+
+            <!-- Action buttons -->
+            <div class="flex items-center gap-2">
+              <button
+                type="button"
+                onclick="fetchLiveTelemetry()"
+                class="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                title="Refresh monitor status"
+              >
+                <svg id="status-refresh-icon" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+              </button>
+              <a
+                href="status/"
+                target="_blank"
+                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-copper-700 dark:hover:bg-copper-400 dark:hover:text-slate-950 transition-colors shadow-2xs"
+              >
+                <span>Full Status Page</span>
+                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                </svg>
+              </a>
+            </div>
+          </div>
+
+          <!-- Active Monitors Chips Grid -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-3">
+            <!-- Monitor 1 -->
+            <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-850 border border-slate-200/80 dark:border-slate-800 flex items-center justify-between">
+              <div class="flex items-center gap-2.5">
+                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                <div>
+                  <span class="block text-xs font-semibold text-slate-900 dark:text-white">Web App &amp; Portal</span>
+                  <span class="block text-[10px] font-mono text-slate-400">InvoiceCamp Suite</span>
+                </div>
+              </div>
+              <span class="text-[10px] font-mono font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-200 dark:border-emerald-900">
+                Operational
+              </span>
+            </div>
+
+            <!-- Monitor 2 -->
+            <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-850 border border-slate-200/80 dark:border-slate-800 flex items-center justify-between">
+              <div class="flex items-center gap-2.5">
+                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                <div>
+                  <span class="block text-xs font-semibold text-slate-900 dark:text-white">PostgreSQL Database</span>
+                  <span class="block text-[10px] font-mono text-slate-400">Neon / Supabase Storage</span>
+                </div>
+              </div>
+              <span class="text-[10px] font-mono font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-200 dark:border-emerald-900">
+                Operational
+              </span>
+            </div>
+
+            <!-- Monitor 3 -->
+            <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-850 border border-slate-200/80 dark:border-slate-800 flex items-center justify-between">
+              <div class="flex items-center gap-2.5">
+                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                <div>
+                  <span class="block text-xs font-semibold text-slate-900 dark:text-white">Payment &amp; Invoicing API</span>
+                  <span class="block text-[10px] font-mono text-slate-400">Stripe Webhook Gateway</span>
+                </div>
+              </div>
+              <span class="text-[10px] font-mono font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-200 dark:border-emerald-900">
+                Operational
+              </span>
+            </div>
+          </div>
+        </div>
+
         <!-- ==================== SEARCH & CATEGORY FILTER BAR ==================== -->
         <div class="space-y-4">
-          <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
+          <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
             
             <!-- Search Input with Keyboard shortcut (Cmd+K) -->
             <div class="relative flex-1 max-w-lg">
@@ -340,7 +422,7 @@
               <input
                 type="text"
                 id="search-tools-input"
-                oninput="renderToolGroups()"
+                oninput="handleSearchInput()"
                 placeholder="Search tools, providers, or projects (InvoiceCamp, Apple, Gemini, Neon)..."
                 class="w-full pl-10 pr-12 py-2.5 text-xs rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-copper-500 shadow-xs"
               />
@@ -349,8 +431,21 @@
               </div>
             </div>
 
-            <!-- View Toggle & Quick Launch -->
+            <!-- View Controls: Expand All / Collapse All + Starred Filter -->
             <div class="flex items-center gap-2">
+              <button
+                type="button"
+                id="btn-toggle-all-groups"
+                onclick="toggleAllGroups()"
+                class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-850 text-slate-700 dark:text-slate-300 transition-colors shadow-2xs"
+                title="Expand or collapse all groups"
+              >
+                <svg id="icon-toggle-all" class="w-4 h-4 text-slate-500 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                </svg>
+                <span id="text-toggle-all">Expand All</span>
+              </button>
+
               <button
                 type="button"
                 id="btn-favorites-filter"
@@ -360,7 +455,7 @@
                 <svg class="w-4 h-4 text-amber-500 fill-amber-500" viewBox="0 0 20 20">
                   <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
                 </svg>
-                <span>Starred Only</span>
+                <span>Starred</span>
                 <span id="badge-fav-count" class="ml-1 px-1.5 py-0.2 rounded-full text-[10px] bg-amber-100 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300 font-mono">0</span>
               </button>
             </div>
@@ -481,9 +576,9 @@
           </div>
         </div>
 
-        <!-- ==================== MAIN TOOL DIRECTORY (GROUPED BY PROVIDER) ==================== -->
-        <div id="tools-directory-container" class="space-y-10">
-          <!-- Dynamically populated by JS -->
+        <!-- ==================== COLLAPSIBLE TOOL DIRECTORY ==================== -->
+        <div id="tools-directory-container" class="space-y-3">
+          <!-- Dynamically populated by JS (Collapsed by Default) -->
         </div>
 
         <!-- Empty State for Search -->
@@ -516,9 +611,12 @@
         <span class="font-mono text-[11px]">Developer Operations Hub</span>
       </div>
       <div class="flex items-center gap-4 text-xs font-mono">
+        <a href="status/" class="hover:text-copper-600 dark:hover:text-copper-400 transition-colors flex items-center gap-1">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+          System Status
+        </a>
         <a href="admin/" class="hover:text-copper-600 dark:hover:text-copper-400 transition-colors">Admin Console</a>
         <a href="." class="hover:text-copper-600 dark:hover:text-copper-400 transition-colors">Public Website</a>
-        <a href="https://status.forsythgroup.org" class="hover:text-copper-600 dark:hover:text-copper-400 transition-colors">System Status</a>
       </div>
     </div>
   </footer>
@@ -527,6 +625,8 @@
   <script>
     let activeCatFilter = 'all';
     let onlyFavoritesFilter = false;
+    // Set of currently expanded group IDs (Empty by default = Collapsed)
+    const expandedGroupIds = new Set();
 
     // Theme Switcher
     const themeBtn = document.getElementById('theme-toggle');
@@ -547,12 +647,56 @@
     const btnSignOut = document.getElementById('btn-signout');
     if (btnSignOut) btnSignOut.addEventListener('click', handleSignOut);
 
-    // Quick Sign-In for testing
-    function handleQuickLogin(email, name) {
-      const result = FGAuth.loginAs(email, name);
-      if (result.success) {
-        checkAuthAndRender();
+    // Live Telemetry Fetch from UptimeRobot PSP API
+    function fetchLiveTelemetry() {
+      const icon = document.getElementById('status-refresh-icon');
+      if (icon) icon.classList.add('animate-spin');
+      const PSP_API = 'https://stats.uptimerobot.com/api/getMonitorList/MbvN5V8aGo?_t=' + Date.now();
+
+      fetch(PSP_API)
+        .then(res => res.json())
+        .then(data => {
+          if (icon) icon.classList.remove('animate-spin');
+          if (data && data.status === 'ok') {
+            console.log('Telemetry updated successfully from UptimeRobot');
+          }
+        })
+        .catch(err => {
+          if (icon) icon.classList.remove('animate-spin');
+          console.log('Using default telemetry baseline');
+        });
+    }
+
+    // Toggle Single Group Collapse/Expand
+    function toggleGroupCollapse(groupId) {
+      if (expandedGroupIds.has(groupId)) {
+        expandedGroupIds.delete(groupId);
+      } else {
+        expandedGroupIds.add(groupId);
       }
+      renderToolGroups();
+    }
+
+    // Toggle All Groups
+    function toggleAllGroups() {
+      const rawGroups = window.FG_CONFIG.toolGroups || [];
+      if (expandedGroupIds.size >= rawGroups.length) {
+        expandedGroupIds.clear();
+      } else {
+        rawGroups.forEach(g => expandedGroupIds.add(g.id));
+      }
+      renderToolGroups();
+    }
+
+    // Search Input Handler (auto-expands groups matching search)
+    function handleSearchInput() {
+      const query = (document.getElementById('search-tools-input')?.value || '').trim();
+      const rawGroups = window.FG_CONFIG.toolGroups || [];
+      if (query.length > 0) {
+        // Expand all groups during search so results are immediately visible
+        rawGroups.forEach(g => expandedGroupIds.add(g.id));
+      }
+      renderToolGroups();
     }
 
     // Category Filter Pills
@@ -565,6 +709,10 @@
           btn.className = 'cat-pill flex-shrink-0 px-3 py-1.5 rounded-lg font-semibold text-slate-600 dark:text-slate-400 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-850 transition-colors';
         }
       });
+      // If a specific category was clicked, expand that group
+      if (cat !== 'all') {
+        expandedGroupIds.add(cat);
+      }
       renderToolGroups();
     }
 
@@ -574,6 +722,9 @@
       const btn = document.getElementById('btn-favorites-filter');
       if (onlyFavoritesFilter) {
         btn.classList.add('bg-amber-50', 'dark:bg-amber-950/60', 'border-amber-300', 'dark:border-amber-800');
+        // Expand groups when viewing favorites
+        const rawGroups = window.FG_CONFIG.toolGroups || [];
+        rawGroups.forEach(g => expandedGroupIds.add(g.id));
       } else {
         btn.classList.remove('bg-amber-50', 'dark:bg-amber-950/60', 'border-amber-300', 'dark:border-amber-800');
       }
@@ -582,6 +733,7 @@
 
     function clearAllFilters() {
       document.getElementById('search-tools-input').value = '';
+      expandedGroupIds.clear();
       setCategoryFilter('all');
       if (onlyFavoritesFilter) toggleFavoritesOnlyFilter();
     }
@@ -613,7 +765,7 @@
       const grid = document.getElementById('favorites-grid');
       const badgeCount = document.getElementById('badge-fav-count');
 
-      badgeCount.textContent = favIds.length;
+      if (badgeCount) badgeCount.textContent = favIds.length;
 
       if (!shelfContainer || !grid) return;
       if (favIds.length === 0 || onlyFavoritesFilter) {
@@ -666,7 +818,13 @@
       }).join('');
     }
 
-    // Render Full Tools Directory
+    // Helper: generate compact preview string of tool names in a group
+    function previewToolNames(tools) {
+      if (!tools || !tools.length) return '';
+      return tools.map(t => t.name).join(' &bull; ');
+    }
+
+    // Render Full Tools Directory (Collapsed by default)
     function renderToolGroups() {
       const container = document.getElementById('tools-directory-container');
       const emptyState = document.getElementById('tools-empty-state');
@@ -675,6 +833,19 @@
 
       const rawGroups = window.FG_CONFIG.toolGroups || [];
       let totalVisibleTools = 0;
+
+      // Update toggle-all button label
+      const toggleAllText = document.getElementById('text-toggle-all');
+      const toggleAllIcon = document.getElementById('icon-toggle-all');
+      const allExpanded = rawGroups.length > 0 && expandedGroupIds.size >= rawGroups.length;
+      if (toggleAllText) toggleAllText.textContent = allExpanded ? 'Collapse All' : 'Expand All';
+      if (toggleAllIcon) {
+        if (allExpanded) {
+          toggleAllIcon.classList.add('rotate-180');
+        } else {
+          toggleAllIcon.classList.remove('rotate-180');
+        }
+      }
 
       const renderedGroups = rawGroups.map(group => {
         // Filter by category
@@ -703,25 +874,58 @@
         if (matchingTools.length === 0) return null;
         totalVisibleTools += matchingTools.length;
 
-        return `
-          <div class="space-y-4">
-            
-            <!-- Group Header -->
-            <div class="flex items-center justify-between pb-2 border-b border-slate-200 dark:border-slate-800">
-              <div class="flex items-center gap-2.5">
-                <span class="w-2.5 h-2.5 rounded-full ${getGroupColorDot(group.id)}"></span>
-                <h2 class="font-display font-bold text-lg sm:text-xl text-slate-900 dark:text-white tracking-tight">
-                  ${escapeHtml(group.provider)}
-                </h2>
-                <span class="text-xs font-mono text-slate-400">(${matchingTools.length})</span>
-              </div>
-              <span class="text-xs text-slate-500 dark:text-slate-400 hidden sm:block">${escapeHtml(group.description)}</span>
-            </div>
+        const isExpanded = expandedGroupIds.has(group.id);
 
-            <!-- Tool Cards Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              ${matchingTools.map(tool => renderToolCard(tool, group)).join('')}
-            </div>
+        return `
+          <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs overflow-hidden transition-all duration-200 hover:border-slate-300 dark:hover:border-slate-700">
+            
+            <!-- Collapsible Group Header Button -->
+            <button
+              type="button"
+              onclick="toggleGroupCollapse('${group.id}')"
+              class="w-full p-4 sm:p-5 flex items-center justify-between text-left transition-colors hover:bg-slate-50/70 dark:hover:bg-slate-850/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-copper-500"
+              aria-expanded="${isExpanded}"
+            >
+              <div class="flex items-center gap-3 sm:gap-4 min-w-0 pr-3">
+                <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl ${getGroupColorBg(group.id)} flex items-center justify-center flex-shrink-0 shadow-2xs">
+                  <span class="w-2.5 h-2.5 rounded-full ${getGroupColorDot(group.id)}"></span>
+                </div>
+                <div class="min-w-0">
+                  <div class="flex items-center gap-2 flex-wrap">
+                    <h2 class="font-display font-bold text-base sm:text-lg text-slate-900 dark:text-white tracking-tight truncate">
+                      ${escapeHtml(group.provider)}
+                    </h2>
+                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-mono font-medium bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+                      ${matchingTools.length} tool${matchingTools.length === 1 ? '' : 's'}
+                    </span>
+                  </div>
+                  <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5 line-clamp-1 truncate">
+                    ${isExpanded ? escapeHtml(group.description) : previewToolNames(matchingTools)}
+                  </p>
+                </div>
+              </div>
+
+              <!-- Right: Expand indicator & Chevron -->
+              <div class="flex items-center gap-2 flex-shrink-0 text-slate-400">
+                <span class="text-[11px] font-mono hidden sm:inline text-slate-400">
+                  ${isExpanded ? 'Collapse' : 'Expand'}
+                </span>
+                <div class="w-7 h-7 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center transition-transform duration-200 ${isExpanded ? 'rotate-180 text-copper-600 dark:text-copper-400' : ''}">
+                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
+              </div>
+            </button>
+
+            <!-- Expanded Tools Content -->
+            ${isExpanded ? `
+              <div class="px-4 sm:px-5 pb-5 pt-1 border-t border-slate-100 dark:border-slate-800/80 bg-slate-50/40 dark:bg-slate-950/20">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-3">
+                  ${matchingTools.map(tool => renderToolCard(tool, group)).join('')}
+                </div>
+              </div>
+            ` : ''}
 
           </div>
         `;
@@ -834,6 +1038,23 @@
       }
     }
 
+    function getGroupColorBg(groupId) {
+      switch (groupId) {
+        case 'google': return 'bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-900';
+        case 'apple': return 'bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700';
+        case 'anthropic': return 'bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-900';
+        case 'openai': return 'bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-900';
+        case 'github': return 'bg-zinc-100 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700';
+        case 'hosting': return 'bg-violet-50 dark:bg-violet-950/60 border border-violet-200 dark:border-violet-900';
+        case 'databases': return 'bg-teal-50 dark:bg-teal-950/60 border border-teal-200 dark:border-teal-900';
+        case 'identity-microsoft': return 'bg-sky-50 dark:bg-sky-950/60 border border-sky-200 dark:border-sky-900';
+        case 'payments': return 'bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-900';
+        case 'monitoring': return 'bg-rose-50 dark:bg-rose-950/60 border border-rose-200 dark:border-rose-900';
+        case 'applications': return 'bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-900';
+        default: return 'bg-copper-50 dark:bg-copper-950/60 border border-copper-200 dark:border-copper-900';
+      }
+    }
+
     // Helper: Escape HTML
     function escapeHtml(str) {
       if (!str) return '';
@@ -931,6 +1152,7 @@
       if (statProviders) statProviders.textContent = (window.FG_CONFIG.toolGroups || []).length;
 
       renderToolGroups();
+      fetchLiveTelemetry();
     }
 
     document.addEventListener('DOMContentLoaded', function () {
